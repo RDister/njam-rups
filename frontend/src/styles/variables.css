@@ -1,3 +1,10 @@
 :root {
-  --background-01: #fff;
+  --background-01: #ffffff;
+  --color-game-submit-guess-button: #0040a6;
+  --color-game-submit-guess-button-text: #ffffff;
+  --color-input-border: #002766;
+  --color-input-text: #b6b6b6;
+  --color-guess-history-text: #ffffff;
+  --color-guess-history-background-correct: #28900d;
+  --color-guess-history-background-incorrect: #e21c3d;
 }
