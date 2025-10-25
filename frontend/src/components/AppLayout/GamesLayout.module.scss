@@ -1,0 +1,17 @@
+.container {
+  position: relative;
+  display: flex;
+  height: 100vh;
+  background-color: gray; // temporary, delete when we have background
+  flex-direction: column;
+  align-items: center;
+}
+
+.body {
+  background-color: var(--background-01);
+  width: 90%;
+  height: 80%;
+  margin-top: 153px;
+  border-radius: 40px;
+  padding: 22px;
+}
