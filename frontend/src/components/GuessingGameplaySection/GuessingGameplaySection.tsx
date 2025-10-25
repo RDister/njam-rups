@@ -19,38 +19,59 @@ const GuessingGameplaySection = ({
   gameType,
   answer,
 }: GuessingGameplaySectionProps) => {
-  const [guessHistory, setGuessHistory] = useState<GuessItem[]>([
-    { name: "Albania", isCorrect: true },
-    { name: "Slovenia", isCorrect: false },
-    { name: "France", isCorrect: false },
-    { name: "Austria", isCorrect: false },
-    { name: "Italy", isCorrect: false },
-    { name: "Italy", isCorrect: false },
-    { name: "Italy", isCorrect: false },
-    { name: "Italy", isCorrect: false },
-    { name: "Italy", isCorrect: false },
-    { name: "Italy", isCorrect: false },
-    { name: "Italy", isCorrect: false },
-    { name: "Italy", isCorrect: false },
-  ]);
+  const [guessHistory, setGuessHistory] = useState<GuessItem[]>([]);
+
+  const capitalizeFirstLetter = (word: string) => {
+    return String(word).charAt(0).toUpperCase() + String(word).slice(1);
+  };
+
+  const makeGuess = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const data = formData.get("currentGuess")?.toString();
+    e.currentTarget.reset();
+    if (data?.toString().toLowerCase() === answer.toLowerCase()) {
+      const formattedWord = capitalizeFirstLetter(data);
+      setGuessHistory([
+        { name: formattedWord || "", isCorrect: true },
+        ...guessHistory,
+      ]);
+    } else {
+      if (data) {
+        const formattedWord = capitalizeFirstLetter(data);
+        setGuessHistory([
+          { name: formattedWord || "", isCorrect: false },
+          ...guessHistory,
+        ]);
+      } else {
+        console.error("This should never happen we dont handle it");
+      }
+    }
+  };
 
   return (
     <div className={classes.componentWrapper}>
       <div className={classes.flagContainer}>
         <Image src={albaniaFlag} alt="flag" className={classes.flag} fill />
       </div>
-      <form className={classes.form}>
+      <form className={classes.form} onSubmit={makeGuess}>
         {gameType === "country" ? (
           <input
             className={classes.countryInput}
             aria-label="Country name input field"
             placeholder="Enter country..."
+            id="currentGuess"
+            name="currentGuess"
+            required
           ></input>
         ) : (
           <input
             className={classes.countryInput}
             aria-label="Country name input field"
             placeholder="Enter citry..."
+            id="currentGuess"
+            name="currentGuess"
+            required
           ></input>
         )}
         <button type="submit" className={classes.submitBtn}>
