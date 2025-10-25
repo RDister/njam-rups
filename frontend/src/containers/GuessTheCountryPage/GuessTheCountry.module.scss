@@ -1,0 +1,14 @@
+.pageWrapper {
+  display: flex;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+.contentWrapper {
+  background-color: var(--background-01);
+  width: 95%;
+  height: 75%;
+  margin-top: 160px;
+  border-radius: 40px;
+}
