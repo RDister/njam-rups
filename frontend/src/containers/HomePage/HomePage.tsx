@@ -1,8 +1,10 @@
 import { memo } from "react";
 import Typography from "@/components/Typography/Typography";
+import GameCard from "@/components/GameCard/GameCard";
+import sloveniaFlag from "../../../public/images/slovenia-flag.png";
+import maribor from "../../../public/images/maribor.jpg";
+import eiffelTower from "../../../public/images/eiffel-tower.jpg";
 import classes from "./HomePage.module.scss";
-import Button from "@/components/Button/Button";
-import Input from "@/components/Input/Input";
 
 const HomePage = () => {
   return (
@@ -13,9 +15,22 @@ const HomePage = () => {
         </Typography>
         <Typography variant="heading-3">Geography</Typography>
       </section>
-      <section style={{ background: "white", padding: "20px" }}>
-        <Button>Test</Button>
-        <Input label="Test" placeholder="test" />
+      <section className={classes.cards}>
+        <GameCard
+          title="Game Title"
+          description="Test your knowledge on European countries flags! Recognize the flag and select the country it belongs to."
+          imageUrl={sloveniaFlag}
+        />
+        <GameCard
+          title="Guess the Capital City"
+          description="Can you correctly identify what city belongs to which country? "
+          imageUrl={maribor}
+        />
+        <GameCard
+          title="Guess the Landmark"
+          description="Can you correctly identify what landmark belongs to which city?"
+          imageUrl={eiffelTower}
+        />
       </section>
     </div>
   );
