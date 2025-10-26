@@ -54,7 +54,7 @@ const Typography = (props: TypographyProps) => {
       className={classNames(classes[variant], className)}
       style={{
         ...(align ? { textAlign: align } : {}),
-        ...(color ? { color: `var(--${color})` } : {}),
+        ...(color ? { color: `var(${color})` } : {}),
       }}
     >
       {children}

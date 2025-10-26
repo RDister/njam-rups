@@ -2,6 +2,7 @@ import { memo } from "react";
 import Typography from "@/components/Typography/Typography";
 import classes from "./HomePage.module.scss";
 import Button from "@/components/Button/Button";
+import Input from "@/components/Input/Input";
 
 const HomePage = () => {
   return (
@@ -12,8 +13,9 @@ const HomePage = () => {
         </Typography>
         <Typography variant="heading-3">Geography</Typography>
       </section>
-      <section>
-        <Button fullWidth>Test</Button>
+      <section style={{ background: "white", padding: "20px" }}>
+        <Button>Test</Button>
+        <Input label="Test" placeholder="test" />
       </section>
     </div>
   );

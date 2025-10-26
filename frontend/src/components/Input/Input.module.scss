@@ -1,0 +1,85 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  gap: 4px;
+  position: relative;
+
+  &.expanded {
+    width: 100%;
+  }
+}
+
+.label {
+  color: var(--neutral-800);
+}
+
+.inputWrapper {
+  display: flex;
+  position: relative;
+}
+
+.input {
+  background: var(--neutral-100);
+  padding: 10px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--neutral-300);
+  transition: box-shadow 0.2s ease;
+  flex: 1;
+
+  &:focus {
+    box-shadow: 0 0 0 2px var(--neutral-700);
+    outline: none;
+  }
+
+  &:disabled {
+    color: var(--neutral-500);
+  }
+
+  &:read-only {
+    cursor: default;
+    box-shadow: none;
+  }
+
+  &.withSufixAction {
+    padding-right: 44px;
+  }
+}
+
+.sufixActionButton {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  position: absolute;
+  right: 14px;
+  background: none;
+  cursor: pointer;
+
+  &:hover {
+    .sufixActionIcon {
+      color: var(--neutral-300);
+    }
+  }
+}
+
+.sufixActionIcon {
+  color: var(--neutral-500);
+  transition: all 0.2s ease-in-out;
+  transition-property: color;
+}
+
+.status {
+  color: var(--error-01);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.error {
+  box-shadow: 0px 0px 0px 2px var(--error-01);
+
+  &:focus {
+    box-shadow: 0px 0px 0px 2px var(--error-01);
+    outline: none;
+  }
+}
