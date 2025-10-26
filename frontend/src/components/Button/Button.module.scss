@@ -7,13 +7,13 @@
   gap: 12px;
   cursor: pointer;
   border: none;
-  padding: 4px 12px;
-  border-radius: 16px;
-  background-color: var(--accent-02);
-  color: var(--white);
+  padding: 8px 32px;
+  border-radius: 14px;
+  background-color: var(--accent-01);
+  color: var(--background-01);
   transition: background-color 200ms ease-in-out, color 200ms ease-in-out;
   border: 1px solid transparent;
-  min-height: 44px;
+  min-height: 36px;
 
   &:disabled {
     background-color: var(--shadow-01);

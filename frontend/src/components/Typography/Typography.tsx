@@ -15,12 +15,24 @@ type TextVariant =
   | "body-2"
   | "body-2-regular";
 
+type TypographyVariant =
+  | "p"
+  | "h1"
+  | "h2"
+  | "h3"
+  | "h4"
+  | "h5"
+  | "h6"
+  | "span"
+  | "div";
+
 type TypographyProps = HTMLAttributes<HTMLSpanElement> & {
   children: ReactNode;
   variant?: TextVariant;
   ref?: Ref<HTMLParagraphElement>;
   align?: "left" | "center" | "right";
   color?: string;
+  as?: TypographyVariant;
 };
 
 const Typography = (props: TypographyProps) => {
@@ -31,10 +43,13 @@ const Typography = (props: TypographyProps) => {
     variant = "body-1",
     align = "left",
     color,
+    as = "p",
   } = props;
 
+  const Element = as;
+
   return (
-    <p
+    <Element
       ref={ref}
       className={classNames(classes[variant], className)}
       style={{
@@ -43,7 +58,7 @@ const Typography = (props: TypographyProps) => {
       }}
     >
       {children}
-    </p>
+    </Element>
   );
 };
 
