@@ -1,5 +1,6 @@
 import { memo, ReactNode } from "react";
 import classes from "./GamesLayout.module.scss";
+import Header from "../Header/Header";
 
 interface GamesLayoutProps {
   children: ReactNode;
@@ -8,7 +9,7 @@ interface GamesLayoutProps {
 const GamesLayout = ({ children }: GamesLayoutProps) => {
   return (
     <div className={classes.container}>
-      {/* <Header /> */}
+      <Header />
       <div className={classes.body}>{children}</div>
     </div>
   );
