@@ -52,7 +52,7 @@ const GuessingGameplaySection = ({
   return (
     <div className={classes.componentWrapper}>
       <div className={classes.flagContainer}>
-        <Image src={albaniaFlag} alt="flag" className={classes.flag} fill />
+        <Image src={albaniaFlag} alt="flag" className={classes.flag} />
       </div>
       <form className={classes.form} onSubmit={makeGuess}>
         {gameType === "country" ? (
