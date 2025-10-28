@@ -1,8 +1,7 @@
 .container {
   position: relative;
   display: flex;
-  height: 100vh;
-  background-color: gray; // temporary, delete when we have background
+  height: 100dvh;
   flex-direction: column;
   align-items: center;
 }
