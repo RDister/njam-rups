@@ -4,6 +4,8 @@
   align-items: center;
   flex-direction: column;
   gap: 60px;
+  width: 100%;
+  position: relative;
 }
 
 .titleSection {
@@ -19,4 +21,11 @@
 .title {
   font-size: 92px;
   margin-bottom: -20px;
+}
+
+.cards {
+  display: flex;
+  gap: 40px;
+  width: 100%;
+  justify-content: center;
 }
