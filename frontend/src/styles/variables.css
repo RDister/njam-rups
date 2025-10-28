@@ -1,4 +1,5 @@
 :root {
+  --background-01: #ffffff;
   --background-01: #fff;
   --accent-01: #0040a6;
 
@@ -16,4 +17,8 @@
   --neutral-900: #212529;
 
   --error-01: #ff5151;
+
+  --color-guess-history-text: #ffffff;
+  --color-guess-history-background-correct: #28900d;
+  --color-guess-history-background-incorrect: #e21c3d;
 }
