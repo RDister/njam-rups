@@ -4,6 +4,8 @@ import { memo, useState } from "react";
 import Image from "next/image";
 import albaniaFlag from "../../../public/GuessTheCountry/image.png";
 import classes from "./GuessingGameplaySection.module.scss";
+import Button from "../Button/Button";
+import Input from "../Input/Input";
 
 interface GuessingGameplaySectionProps {
   gameType: "country" | "city";
@@ -55,28 +57,16 @@ const GuessingGameplaySection = ({
         <Image src={albaniaFlag} alt="flag" className={classes.flag} />
       </div>
       <form className={classes.form} onSubmit={makeGuess}>
-        {gameType === "country" ? (
-          <input
-            className={classes.countryInput}
-            aria-label="Country name input field"
-            placeholder="Enter country..."
-            id="currentGuess"
-            name="currentGuess"
-            required
-          ></input>
-        ) : (
-          <input
-            className={classes.countryInput}
-            aria-label="Country name input field"
-            placeholder="Enter citry..."
-            id="currentGuess"
-            name="currentGuess"
-            required
-          ></input>
-        )}
-        <button type="submit" className={classes.submitBtn}>
-          Enter
-        </button>
+        <Input
+          expandHorizontaly
+          placeholder={
+            gameType === "country" ? "Enter country..." : "Enter city..."
+          }
+          name="currentGuess"
+          id="currentGuess"
+          required
+        ></Input>
+        <Button>Enter</Button>
       </form>
       <div className={classes.guessHistoryWrapper}>
         <p>Guess history</p>

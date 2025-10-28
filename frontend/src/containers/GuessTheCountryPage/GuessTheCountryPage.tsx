@@ -1,6 +1,6 @@
 import { memo } from "react";
-import classes from "./GuessTheCountry.module.scss";
 import GuessingGameplaySection from "@/components/GuessingGameplaySection/GuessingGameplaySection";
+import classes from "./GuessTheCountryPage.module.scss";
 
 const GuessTheCountryPage = () => {
   return (
