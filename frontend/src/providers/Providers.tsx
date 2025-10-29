@@ -13,7 +13,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
     <QueryClientProvider client={queryClient}>
       <AppProgressProvider
         height="3px"
-        color="#8143c7"
+        color="#0040a6"
         options={{ showSpinner: false }}
         shallowRouting
       >
