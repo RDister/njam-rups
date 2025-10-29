@@ -17,19 +17,22 @@ const HomePage = () => {
       </section>
       <section className={classes.cards}>
         <GameCard
-          title="Game Title"
+          title="Guess the flag"
           description="Test your knowledge on European countries flags! Recognize the flag and select the country it belongs to."
           imageUrl={sloveniaFlag}
+          gamemode="country"
         />
         <GameCard
           title="Guess the Capital City"
           description="Can you correctly identify what city belongs to which country? "
           imageUrl={maribor}
+          gamemode="city"
         />
         <GameCard
           title="Guess the Landmark"
           description="Can you correctly identify what landmark belongs to which city?"
           imageUrl={eiffelTower}
+          gamemode="geoguesser"
         />
       </section>
     </div>

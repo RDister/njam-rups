@@ -19,3 +19,9 @@
 .home {
   font-size: calc(30 * 1rem / 16);
 }
+
+.homeWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
