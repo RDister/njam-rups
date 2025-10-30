@@ -21,4 +21,8 @@
   --color-guess-history-text: #ffffff;
   --color-guess-history-background-correct: #28900d;
   --color-guess-history-background-incorrect: #e21c3d;
+
+  --z-index-start-game-modal: 43;
+  --background-blur: blur(6px);
+  --background-modal: rgba(0, 0, 0, 0.45);
 }

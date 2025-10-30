@@ -10,6 +10,7 @@ interface GameCardProps {
   description: string;
   imageUrl: string | StaticImageData;
   gamemode: "country" | "city" | "geoguesser";
+  toggleModal: () => void;
 }
 
 const GameCard = ({
@@ -17,6 +18,7 @@ const GameCard = ({
   description,
   imageUrl,
   gamemode,
+  toggleModal,
 }: GameCardProps) => {
   return (
     <div className={classes.container}>
@@ -31,18 +33,9 @@ const GameCard = ({
       >
         {description}
       </Typography>
-      <Link
-        href={
-          gamemode === "country"
-            ? "/games/guessTheCountry"
-            : gamemode === "city"
-              ? "/games/guessTheCapital"
-              : "/games/guessTheLandmark"
-        }
-        className={classes.button}
-      >
-        <Button fullWidth>Play now</Button>
-      </Link>
+      <Button fullWidth onClick={toggleModal} className={classes.button}>
+        Play now
+      </Button>
     </div>
   );
 };
