@@ -15,7 +15,7 @@ const Header = () => {
       setCurrentGame("Guess the country");
     } else if (location.includes("guessTheCapital")) {
       setCurrentGame("Guess the capital");
-    } else if (location.includes("geoguesser")) {
+    } else if (location.includes("guessTheLandmark")) {
       setCurrentGame("Guess the landmark");
     }
   }, []);

@@ -36,8 +36,8 @@ const GameCard = ({
           gamemode === "country"
             ? "/games/guessTheCountry"
             : gamemode === "city"
-            ? "/games/guessTheCapital"
-            : "/games/geoguesser"
+              ? "/games/guessTheCapital"
+              : "/games/guessTheLandmark"
         }
         className={classes.button}
       >
