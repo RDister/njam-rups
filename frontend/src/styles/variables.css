@@ -25,4 +25,5 @@
   --z-index-start-game-modal: 43;
   --background-blur: blur(6px);
   --background-modal: rgba(0, 0, 0, 0.45);
+  --border-card: #000;
 }

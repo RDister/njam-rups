@@ -8,6 +8,7 @@ import { useModalState } from "@/store/startGameModal";
 import sadParrot from "../../../public/images/sadParrot.png";
 import mediumParrot from "../../../public/images/mediumParrot.png";
 import happyParrot from "../../../public/images/happyParrot.png";
+import practiceParrot from "../../../public/images/practiceParrot.png";
 import Image from "next/image";
 
 interface StartGameModalProps {
@@ -16,15 +17,7 @@ interface StartGameModalProps {
 
 const StartGameModal = ({ toggleModal }: StartGameModalProps) => {
   const gamemode = useModalState((state) => state.currentGame);
-  const [testScore, setTestScore] = useState<number>(1);
-
-  const startGamePractice = () => {
-    console.log("Practice");
-  };
-
-  const startGameTest = () => {
-    console.log("Test");
-  };
+  const [testScore, setTestScore] = useState<number>(9);
 
   const closeModal = () => {
     console.log("Close");
@@ -43,10 +36,10 @@ const StartGameModal = ({ toggleModal }: StartGameModalProps) => {
           <Link
             href={
               gamemode === "country"
-                ? "/games/guessTheCountry"
+                ? "/games/guessTheCountry?test"
                 : gamemode === "city"
-                ? "/games/guessTheCapital"
-                : "/games/guessTheLandmark"
+                ? "/games/guessTheCapital?test"
+                : "/games/guessTheLandmark?test"
             }
             className={classes.cardWrapper}
           >
@@ -68,7 +61,27 @@ const StartGameModal = ({ toggleModal }: StartGameModalProps) => {
               )}
             </motion.div>
           </Link>
-          <div className={classes.cardWrapper}>Section 2</div>
+          <Link
+            href={
+              gamemode === "country"
+                ? "/games/guessTheCountry?practice"
+                : gamemode === "city"
+                ? "/games/guessTheCapital?practice"
+                : "/games/guessTheLandmark?practice"
+            }
+            className={classes.cardWrapper}
+          >
+            <motion.div
+              className={classes.cardWrapper}
+              whileHover={{
+                scale: 1.01,
+                transition: { duration: 0.2 },
+              }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <Image src={practiceParrot} alt="" className={classes.image2} />
+            </motion.div>
+          </Link>
         </div>
       </motion.div>
     </>
