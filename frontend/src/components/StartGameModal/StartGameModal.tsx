@@ -10,7 +10,11 @@ import mediumParrot from "../../../public/images/mediumParrot.png";
 import happyParrot from "../../../public/images/happyParrot.png";
 import Image from "next/image";
 
-const StartGameModal = () => {
+interface StartGameModalProps {
+  toggleModal: () => void;
+}
+
+const StartGameModal = ({ toggleModal }: StartGameModalProps) => {
   const gamemode = useModalState((state) => state.currentGame);
   const [testScore, setTestScore] = useState<number>(1);
 
@@ -22,40 +26,52 @@ const StartGameModal = () => {
     console.log("Test");
   };
 
+  const closeModal = () => {
+    console.log("Close");
+  };
+
   return (
-    <motion.div className={classes.modalWrapper}>
-      <div className={classes.modal}>
-        <Link
-          href={
-            gamemode === "country"
-              ? "/games/guessTheCountry"
-              : gamemode === "city"
-              ? "/games/guessTheCapital"
-              : "/games/guessTheLandmark"
-          }
-          className={classes.cardWrapper}
-        >
-          <motion.div
+    <>
+      <div className={classes.overlay} onClick={() => toggleModal()}></div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className={classes.modalWrapper}
+      >
+        <div className={classes.modal}>
+          <Link
+            href={
+              gamemode === "country"
+                ? "/games/guessTheCountry"
+                : gamemode === "city"
+                ? "/games/guessTheCapital"
+                : "/games/guessTheLandmark"
+            }
             className={classes.cardWrapper}
-            whileHover={{
-              scale: 1.01,
-              transition: { duration: 0.2 },
-            }}
-            whileTap={{ scale: 0.9 }}
           >
-            <div className={classes.score}>{testScore}/10</div>
-            {0 <= testScore && testScore < 4 ? (
-              <Image src={sadParrot} alt="" className={classes.image} />
-            ) : 4 <= testScore && testScore < 8 ? (
-              <Image src={mediumParrot} alt="" className={classes.image} />
-            ) : (
-              <Image src={happyParrot} alt="" className={classes.image} />
-            )}
-          </motion.div>
-        </Link>
-        <div className={classes.cardWrapper}>Section 2</div>
-      </div>
-    </motion.div>
+            <motion.div
+              className={classes.cardWrapper}
+              whileHover={{
+                scale: 1.01,
+                transition: { duration: 0.2 },
+              }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <div className={classes.score}>{testScore}/10</div>
+              {0 <= testScore && testScore < 4 ? (
+                <Image src={sadParrot} alt="" className={classes.image} />
+              ) : 4 <= testScore && testScore < 8 ? (
+                <Image src={mediumParrot} alt="" className={classes.image} />
+              ) : (
+                <Image src={happyParrot} alt="" className={classes.image} />
+              )}
+            </motion.div>
+          </Link>
+          <div className={classes.cardWrapper}>Section 2</div>
+        </div>
+      </motion.div>
+    </>
   );
 };
 

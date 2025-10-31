@@ -19,7 +19,9 @@ const HomePage = () => {
 
   return (
     <>
-      <AnimatePresence>{isModalOpen && <StartGameModal />}</AnimatePresence>
+      <AnimatePresence>
+        {isModalOpen && <StartGameModal toggleModal={toggleModal} />}
+      </AnimatePresence>
       <div className={classes.container}>
         <section className={classes.titleSection}>
           <Typography variant="heading-1" className={classes.title}>
