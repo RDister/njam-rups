@@ -19,6 +19,8 @@
   --error-01: #ff5151;
 
   --color-guess-history-text: #ffffff;
-  --color-guess-history-background-correct: #28900d;
-  --color-guess-history-background-incorrect: #e21c3d;
+  --success: #28900d;
+  --success-darker: color-mix(in srgb, var(--success) 80%, black);
+  --fail: #e21c3d;
+  --fail-darker: color-mix(in srgb, var(--fail) 80%, black);
 }
