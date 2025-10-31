@@ -17,11 +17,9 @@ interface StartGameModalProps {
 
 const StartGameModal = ({ toggleModal }: StartGameModalProps) => {
   const gamemode = useModalState((state) => state.currentGame);
+  // will be added once gameplay is done
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [testScore, setTestScore] = useState<number>(9);
-
-  const closeModal = () => {
-    console.log("Close");
-  };
 
   return (
     <>
