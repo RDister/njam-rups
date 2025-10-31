@@ -1,29 +1,32 @@
 :root {
-  --background-01: #ffffff;
-  --background-01: #fff;
-  --accent-01: #0040a6;
+	--background-01: #ffffff;
+	--background-01: #fff;
+	--accent-01: #0040a6;
 
-  --neutral-100: #f8f9fa;
-  --neutral-200: #e9ecef;
-  --neutral-300: #dee2e6;
-  --neutral-400: #ced4da;
-  --neutral-500: #adb5bd;
-  --neutral-600: #6c757d;
-  --neutral-700: #495057;
-  --neutral-800: #343a40;
-  --neutral-850: #2a2f35;
-  --neutral-850-rgb: 42, 47, 53;
-  --neutral-875: #24292c;
-  --neutral-900: #212529;
+	--neutral-100: #f8f9fa;
+	--neutral-200: #e9ecef;
+	--neutral-300: #dee2e6;
+	--neutral-400: #ced4da;
+	--neutral-500: #adb5bd;
+	--neutral-600: #6c757d;
+	--neutral-700: #495057;
+	--neutral-800: #343a40;
+	--neutral-850: #2a2f35;
+	--neutral-850-rgb: 42, 47, 53;
+	--neutral-875: #24292c;
+	--neutral-900: #212529;
 
-  --error-01: #ff5151;
+	--error-01: #ff5151;
 
-  --color-guess-history-text: #ffffff;
-  --color-guess-history-background-correct: #28900d;
-  --color-guess-history-background-incorrect: #e21c3d;
+	--color-guess-history-text: #ffffff;
 
-  --z-index-start-game-modal: 43;
-  --background-blur: blur(6px);
-  --background-modal: rgba(0, 0, 0, 0.45);
-  --border-card: #000;
+	--z-index-start-game-modal: 43;
+	--background-blur: blur(6px);
+	--background-modal: rgba(0, 0, 0, 0.45);
+	--border-card: #000;
+
+	--success: #28900d;
+	--success-darker: color-mix(in srgb, var(--success) 80%, black);
+	--fail: #e21c3d;
+	--fail-darker: color-mix(in srgb, var(--fail) 80%, black);
 }
