@@ -1,16 +1,15 @@
 "use client";
 
-import { memo, useState } from "react";
-import GuessingGameplaySection from "@/components/GuessingGameplaySection/GuessingGameplaySection";
+import { memo, useEffect, useState } from "react";
+import GuessingGameplaySection, {
+	GuessItem,
+} from "@/components/GuessingGameplaySection/GuessingGameplaySection";
+import { Country, europeanCountries } from "@/data/europeanCountries";
 import classes from "./GuessTheCountryPage.module.scss";
-
-export interface GuessItem {
-	name: string;
-	isCorrect: boolean;
-}
 
 const GuessTheCountryPage = () => {
 	const [guessHistory, setGuessHistory] = useState<GuessItem[]>([]);
+	const [currentCountry, setCurrentCountry] = useState<Country>();
 
 	const capitalizeFirstLetter = (word: string) => {
 		return String(word).charAt(0).toUpperCase() + String(word).slice(1);
@@ -22,14 +21,28 @@ const GuessTheCountryPage = () => {
 			{ name: formattedWord || "", isCorrect: isCorrectValue },
 			...guessHistory,
 		]);
+		if (formattedWord === currentCountry?.name) {
+			getGuess();
+			setGuessHistory([]);
+		}
 	};
+
+	const getGuess = () => {
+		const randomIndex = Math.floor(Math.random() * europeanCountries.length);
+		setCurrentCountry(europeanCountries[randomIndex]);
+	};
+
+	useEffect(() => {
+		getGuess();
+	}, []);
 
 	return (
 		<main className={classes.pageWrapper}>
 			<section className={classes.gameDisplay}>
 				<GuessingGameplaySection
 					gameType="country"
-					answer="albania"
+					answer={currentCountry?.name}
+					image={currentCountry?.image}
 					guessHistory={guessHistory}
 					handleGuess={handleGuess}
 				/>
