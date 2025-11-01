@@ -23,22 +23,6 @@
 	gap: 12px;
 }
 
-.countryInput {
-	width: 100%;
-	border-radius: 14px;
-	border: 2px solid var(--color-input-border);
-	padding-left: 16px;
-	font-size: calc(20 * 1rem / 16);
-}
-
-.submitBtn {
-	width: 125px;
-	height: 42px;
-	border-radius: 14px;
-	background-color: var(--color-game-submit-guess-button);
-	color: var(--color-game-submit-guess-button-text);
-}
-
 .guessHistoryWrapper {
 	margin-top: 26px;
 
@@ -70,13 +54,13 @@
 	display: flex;
 	flex-direction: column;
 	gap: 16px;
-	overflow-y: scroll;
-	height: 300px;
-
-	scrollbar-width: none; /* Firefox */
-	-ms-overflow-style: none; /* IE and Edge */
-
-	&::-webkit-scrollbar {
-		display: none; /* Chrome, Safari and Opera */
-	}
+	height: 290px;
+	overflow: hidden;
+	mask-image: linear-gradient(
+		to bottom,
+		transparent,
+		black 0%,
+		black 90%,
+		transparent
+	);
 }
