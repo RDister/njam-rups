@@ -1,0 +1,26 @@
+.container {
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: var(--neutral-700);
+	width: max-content;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 4px 16px;
+	border-radius: 8px;
+	top: -20px;
+	backdrop-filter: blur(4px);
+	z-index: var(--z-index-tooltip);
+}
+
+.container::after {
+	content: "";
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	transform: translateX(-50%);
+	border-width: 8px;
+	border-style: solid;
+	border-color: var(--neutral-700) transparent transparent transparent;
+}

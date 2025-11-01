@@ -1,27 +1,20 @@
 .headerWrapper {
-  background-color: white;
-  width: 90%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 66px;
-  margin-top: 52px;
-  border-radius: 20px;
-  padding: 0 50;
-}
-
-.njam,
-.currentGame {
-  font-size: calc(30 * 1rem / 16);
-  font-weight: 600;
+	background-color: white;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border-radius: 20px;
+	padding: 10px 40px;
+	max-width: 1452px;
+	width: 100%;
 }
 
 .home {
-  font-size: calc(30 * 1rem / 16);
+	font-size: calc(30 * 1rem / 16);
 }
 
 .homeWrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }

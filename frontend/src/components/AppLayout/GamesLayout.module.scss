@@ -1,16 +1,18 @@
 .container {
-  position: relative;
-  display: flex;
-  height: 100dvh;
-  flex-direction: column;
-  align-items: center;
+	position: relative;
+	display: flex;
+	height: 100dvh;
+	flex-direction: column;
+	align-items: center;
+	gap: 35px;
+	padding-block: 32px;
 }
 
 .body {
-  background-color: var(--background-01);
-  width: 90%;
-  height: 80%;
-  margin-top: 50px;
-  border-radius: 40px;
-  padding: 22px;
+	background-color: var(--background-01);
+	border-radius: 40px;
+	padding: 22px;
+	max-width: 1452px;
+	width: 100%;
+	height: 100%;
 }
