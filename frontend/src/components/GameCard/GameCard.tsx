@@ -1,24 +1,34 @@
 import { memo } from "react";
-import classes from "./GameCard.module.scss";
 import Image, { StaticImageData } from "next/image";
 import Typography from "../Typography/Typography";
 import Button from "../Button/Button";
 import Link from "next/link";
-import { Route } from "@/constants/routes";
+import { useStore } from "zustand";
+import classes from "./GameCard.module.scss";
+import { useModalState } from "@/store/startGameModal";
 
 interface GameCardProps {
 	title: string;
 	description: string;
 	imageUrl: string | StaticImageData;
-	buttonHref: Route;
+	gamemode: "country" | "city" | "geoguesser";
+	toggleModal: () => void;
 }
 
 const GameCard = ({
 	title,
 	description,
 	imageUrl,
-	buttonHref,
+	gamemode,
+	toggleModal,
 }: GameCardProps) => {
+	const setGameModal = useModalState((state) => state.setGameModal);
+
+	const handleGameStart = () => {
+		setGameModal(gamemode);
+		toggleModal();
+	};
+
 	return (
 		<div className={classes.container}>
 			<div className={classes.imageWrapper}>
@@ -32,9 +42,9 @@ const GameCard = ({
 			>
 				{description}
 			</Typography>
-			<Link href={buttonHref} className={classes.button}>
-				<Button fullWidth>Play now</Button>
-			</Link>
+			<Button fullWidth onClick={handleGameStart} className={classes.button}>
+				Play now
+			</Button>
 		</div>
 	);
 };

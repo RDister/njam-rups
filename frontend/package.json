@@ -1,38 +1,39 @@
 {
-  "name": "njam-rups",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start",
-    "lint": "eslint"
-  },
-  "dependencies": {
-    "@bprogress/next": "~3.2.12",
-    "@fortawesome/fontawesome-svg-core": "~7.1.0",
-    "@fortawesome/free-brands-svg-icons": "~7.1.0",
-    "@fortawesome/free-regular-svg-icons": "~7.1.0",
-    "@fortawesome/free-solid-svg-icons": "~7.1.0",
-    "@fortawesome/react-fontawesome": "~3.1.0",
-    "@tanstack/react-query": "~ 5.90.5",
-    "@vis.gl/react-google-maps": "^1.6.1",
-    "axios": "~1.12.2",
-    "classnames": "~2.5.1",
-    "framer-motion": "~12.23.24",
-    "next": "~15.5.5",
-    "react": "~19.2.0",
-    "react-dom": "~19.2.0"
-  },
-  "devDependencies": {
-    "@eslint/eslintrc": "~3.3.1",
-    "@tanstack/react-query-devtools": "~5.90.2",
-    "@types/node": "~24.8.0",
-    "@types/react": "~19.2.2",
-    "@types/react-dom": "~19.2.2",
-    "eslint": "~9.37.0",
-    "eslint-config-next": "~15.5.5",
-    "sass": "~1.93.2",
-    "typescript": "~5.9.3"
-  }
+	"name": "njam-rups",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev --turbopack",
+		"build": "next build --turbopack",
+		"start": "next start",
+		"lint": "eslint"
+	},
+	"dependencies": {
+		"@bprogress/next": "~3.2.12",
+		"@fortawesome/fontawesome-svg-core": "~7.1.0",
+		"@fortawesome/free-brands-svg-icons": "~7.1.0",
+		"@fortawesome/free-regular-svg-icons": "~7.1.0",
+		"@fortawesome/free-solid-svg-icons": "~7.1.0",
+		"@fortawesome/react-fontawesome": "~3.1.0",
+		"@tanstack/react-query": "~ 5.90.5",
+		"@vis.gl/react-google-maps": "^1.6.1",
+		"axios": "~1.12.2",
+		"classnames": "~2.5.1",
+		"framer-motion": "~12.23.24",
+		"next": "~15.5.5",
+		"react": "~19.2.0",
+		"react-dom": "~19.2.0",
+		"zustand": "~5.0.8"
+	},
+	"devDependencies": {
+		"@eslint/eslintrc": "~3.3.1",
+		"@tanstack/react-query-devtools": "~5.90.2",
+		"@types/node": "~24.8.0",
+		"@types/react": "~19.2.2",
+		"@types/react-dom": "~19.2.2",
+		"eslint": "~9.37.0",
+		"eslint-config-next": "~15.5.5",
+		"sass": "~1.93.2",
+		"typescript": "~5.9.3"
+	}
 }
