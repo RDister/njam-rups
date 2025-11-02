@@ -2,7 +2,6 @@
 
 import { memo } from "react";
 import Image, { StaticImageData } from "next/image";
-import albaniaFlag from "../../../public/GuessTheCountry/image.png";
 import Button from "../Button/Button";
 import Input from "../Input/Input";
 import classes from "./GuessingGameplaySection.module.scss";
