@@ -25,8 +25,8 @@
 	--background-modal: rgba(0, 0, 0, 0.45);
 	--border-card: #000;
 
-	--success: #28900d;
-	--success-darker: color-mix(in srgb, var(--success) 80%, black);
+	--success: #1dbe80;
+	--success-darker: #0e6443;
 	--fail: #e21c3d;
 	--fail-darker: color-mix(in srgb, var(--fail) 80%, black);
 }
