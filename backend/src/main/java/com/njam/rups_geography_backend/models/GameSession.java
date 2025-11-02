@@ -36,12 +36,11 @@ public class GameSession implements Serializable {
     @Builder.Default
     private Long ttl = 600L; // 10 min
     
-    // Future game state fields (for when you add game logic)
     private Integer currentQuestionNumber;
+    
     private Integer score;
     
-    //Prilagodljiv object za trenutni pravilen odgovor
-    private Object currentCorrectAnswer;
+    private Answer currentCorrectAnswer;
     
     public void updateActivity() {
         this.lastActivityAt = LocalDateTime.now();
