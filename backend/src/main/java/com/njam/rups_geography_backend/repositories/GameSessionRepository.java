@@ -12,5 +12,6 @@ public interface GameSessionRepository extends CrudRepository<GameSession, Strin
     
     Optional<GameSession> findById(String id);
     
+    @Override
     boolean existsById(String id);
 }

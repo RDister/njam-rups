@@ -1,6 +1,5 @@
 package com.njam.rups_geography_backend.controllers;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -14,95 +13,140 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.njam.rups_geography_backend.dto.GuessRequest;
+import com.njam.rups_geography_backend.dto.GuessResponse;
+import com.njam.rups_geography_backend.dto.SessionInfoResponse;
+import com.njam.rups_geography_backend.dto.SightsGuessRequest;
+import com.njam.rups_geography_backend.dto.SightsGuessResponse;
+import com.njam.rups_geography_backend.models.Answer;
 import com.njam.rups_geography_backend.models.GameSession;
+import com.njam.rups_geography_backend.services.GameLogicService;
 import com.njam.rups_geography_backend.services.GameSessionService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 
 @RestController
-@RequestMapping("/api/sessions")
+@RequestMapping("/api/game")
 @RequiredArgsConstructor
+@Slf4j
 public class GameSessionController {
 
     private final GameSessionService gameSessionService;
+    private final GameLogicService gameLogicService;
 
-    // POST + Body: { "gameMode": "flags|capitals|sights", "format": "classic|endless" }
-    //TODO: CLUE VRNEŠ ŽE PRVI
 
-    @PostMapping
-    public ResponseEntity<Map<String, Object>> createSession(@RequestBody Map<String, String> request) {
+    @PostMapping("/start")
+    public ResponseEntity<GuessResponse> startGame(@RequestBody Map<String, String> request) {
         try {
             String gameMode = request.get("gameMode");
             String format = request.get("format");
             
             // Validate required fields
             if (gameMode == null || gameMode.isBlank()) {
-                return ResponseEntity.badRequest()
-                    .body(Map.of("error", "gameMode is required"));
+                return ResponseEntity.badRequest().build();
             }
             if (format == null || format.isBlank()) {
-                return ResponseEntity.badRequest()
-                    .body(Map.of("error", "format is required"));
+                return ResponseEntity.badRequest().build();
             }
 
+            // Create session
             GameSession session = gameSessionService.createSession(gameMode, format);
-
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("sessionId", session.getId());
-            response.put("gameMode", session.getGameMode());
-            response.put("format", session.getFormat());
-            response.put("createdAt", session.getCreatedAt().toString());
-            response.put("questionNumber", session.getCurrentQuestionNumber());
-            response.put("score", session.getScore());
-            response.put("message", "Session created successfully. Will expire after 10 minutes of inactivity.");
+            log.info("Created game session: {}", session.getId());
+            
+            // Generate first question
+            Answer firstQuestion = gameLogicService.startNewQuestion(session.getId());
+            
+            GuessResponse response = GuessResponse.builder()
+                .sessionId(session.getId())
+                .correct(null)              
+                .correctAnswer(null)       
+                .pointsEarned(null)        
+                .score(0)
+                .questionNumber(1)
+                .gameOver(false)
+                .nextImageUrl(gameLogicService.generateImageUrl(gameMode, firstQuestion))
+                .build();
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
             
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest()
-                .body(Map.of("error", e.getMessage()));
+            log.error("Failed to start game: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
 
-    // GET /api/sessions/{sessionId} -> vrne info o sessionu
-    @GetMapping("/{sessionId}")
-    public ResponseEntity<Map<String, Object>> getSession(@PathVariable String sessionId) {
+    //For capitals and flags
+    @PostMapping("/guess")
+    public ResponseEntity<GuessResponse> submitGuess(@Valid @RequestBody GuessRequest request) {
+        try {
+            log.info("Processing guess for session: {}", request.getSessionId());
+            GuessResponse response = gameLogicService.processGuess(request);
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            log.error("Invalid guess request: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            log.error("Error processing guess", e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+    
+    //For sights
+    @PostMapping("/guess/sights")
+    public ResponseEntity<SightsGuessResponse> submitSightsGuess(@Valid @RequestBody SightsGuessRequest request) {
+        try {
+            log.info("Processing sights guess for session: {}", request.getSessionId());
+            SightsGuessResponse response = gameLogicService.processSightsGuess(request);
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            log.error("Invalid sights guess request: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            log.error("Error processing sights guess", e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+    
+    //Get session info.
+    @GetMapping("/session/{sessionId}")
+    public ResponseEntity<SessionInfoResponse> getSession(@PathVariable String sessionId) {
         try {
             GameSession session = gameSessionService.getSession(sessionId);
             
-            Map<String, Object> response = new HashMap<>();
-            response.put("sessionId", session.getId());
-            response.put("gameMode", session.getGameMode());
-            response.put("format", session.getFormat());
-            response.put("createdAt", session.getCreatedAt().toString());
-            response.put("lastActivityAt", session.getLastActivityAt().toString());
-            response.put("questionNumber", session.getCurrentQuestionNumber());
-            response.put("score", session.getScore());
+            SessionInfoResponse response = SessionInfoResponse.builder()
+                .sessionId(session.getId())
+                .gameMode(session.getGameMode())
+                .format(session.getFormat())
+                .createdAt(session.getCreatedAt().toString())
+                .lastActivityAt(session.getLastActivityAt().toString())
+                .questionNumber(session.getCurrentQuestionNumber())
+                .score(session.getScore())
+                .currentCorrectAnswer(session.getCurrentCorrectAnswer())
+                .build();
             
             return ResponseEntity.ok(response);
             
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Map.of("error", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
-    
-    // DELETE /api/sessions/{sessionId} -> zbriše session
-    @DeleteMapping("/{sessionId}")
-    public ResponseEntity<Map<String, String>> endSession(@PathVariable String sessionId) {
+    //End a game session
+    @DeleteMapping("/end/{sessionId}")
+    public ResponseEntity<Map<String, String>> endGame(@PathVariable String sessionId) {
         gameSessionService.endSession(sessionId);
+        log.info("Game session ended: {}", sessionId);
         return ResponseEntity.ok(Map.of(
-            "message", "Session ended successfully",
+            "message", "Game ended successfully",
             "sessionId", sessionId
         ));
     }
 
-
-    // HEAD /api/sessions/{sessionId} -> 200 if exists, 404 if not found
-    @RequestMapping(value = "/{sessionId}", method = RequestMethod.HEAD)
+    //Check if game session exists.
+    @RequestMapping(value = "/session/{sessionId}", method = RequestMethod.HEAD)
     public ResponseEntity<Void> checkSession(@PathVariable String sessionId) {
         if (gameSessionService.sessionExists(sessionId)) {
             return ResponseEntity.ok().build();
