@@ -1,36 +1,31 @@
 "use client";
 
-import GuessingGameplaySection, {
-	GuessItem,
-} from "@/components/GuessingGameplaySection/GuessingGameplaySection";
+import GuessingGameplaySection from "@/components/GuessingGameplaySection/GuessingGameplaySection";
 import { memo, useState } from "react";
 import classes from "./GuessTheCapitalPage.module.scss";
+import GameMap, { MapGuess } from "@/components/GameMap/GameMap";
+import { AnimatePresence } from "framer-motion";
+import EndModal from "@/components/EndModal/EndModal";
+import { euCapitals } from "@/data/euCapitals";
 
 const GuessTheCapitalPage = () => {
-	const [guessHistory, setGuessHistory] = useState<GuessItem[]>([]);
+	const [isGameOver, setIsGameOver] = useState(false);
 
-	const capitalizeFirstLetter = (word: string) => {
-		return String(word).charAt(0).toUpperCase() + String(word).slice(1);
-	};
+	const [guesses, setGuesses] = useState<MapGuess[]>([]);
 
-	const handleGuess = (isCorrectValue: boolean, guess: string) => {
-		const formattedWord = capitalizeFirstLetter(guess);
-		setGuessHistory([
-			{ name: formattedWord || "", isCorrect: isCorrectValue },
-			...guessHistory,
-		]);
-	};
 	return (
 		<main className={classes.pageWrapper}>
 			<section className={classes.gameDisplay}>
 				<GuessingGameplaySection
-					gameType="country"
-					answer="Paris"
-					guessHistory={guessHistory}
-					handleGuess={handleGuess}
+					gameType="city"
+					setGuesses={setGuesses}
+					autocompleteOptions={euCapitals.map((item) => item.capital)}
 				/>
 			</section>
-			<section className={classes.mapSection}>right</section>
+			<section className={classes.mapSection}>
+				<GameMap guesses={guesses} />
+			</section>
+			<AnimatePresence>{isGameOver && <EndModal />}</AnimatePresence>
 		</main>
 	);
 };

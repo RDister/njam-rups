@@ -1,56 +1,127 @@
 "use client";
 
-import { memo } from "react";
-import Image, { StaticImageData } from "next/image";
+import {
+	Dispatch,
+	FormEvent,
+	memo,
+	SetStateAction,
+	useEffect,
+	useState,
+} from "react";
+import Image from "next/image";
 import Button from "../Button/Button";
-import Input from "../Input/Input";
+import Typography from "../Typography/Typography";
+import { motion } from "framer-motion";
+import { useGameEnd, useGameGuess, useGameStart } from "@/api/game/hooks";
 import classes from "./GuessingGameplaySection.module.scss";
-
-export interface GuessItem {
-	name: string;
-	isCorrect: boolean;
-}
+import InputAutocomplete from "../Input/InputAutocomplete/InputAutocomplete";
+import { MapGuess } from "../GameMap/GameMap";
 
 interface GuessingGameplaySectionProps {
 	gameType: "country" | "city";
-	answer?: string;
-	guessHistory: GuessItem[];
-	handleGuess: (isCorrectValue: boolean, guess: string) => void;
-	image?: StaticImageData;
+	setGuesses: Dispatch<SetStateAction<MapGuess[]>>;
+	autocompleteOptions: string[];
+}
+
+interface GuessItem {
+	name: string;
+	isCorrect: boolean;
+	timeTaken: number;
 }
 
 const GuessingGameplaySection = ({
 	gameType,
-	answer,
-	guessHistory,
-	handleGuess,
-	image,
+	setGuesses,
+	autocompleteOptions,
 }: GuessingGameplaySectionProps) => {
-	const makeGuess = (e: React.FormEvent<HTMLFormElement>) => {
+	const [guessHistory, setGuessHistory] = useState<GuessItem[]>([]);
+	const [sessionId, setSessionId] = useState<string | null>(null);
+	const [imageUrl, setImageUrl] = useState("");
+
+	const { mutate: startGame } = useGameStart();
+	const { mutate: endGame } = useGameEnd();
+	const { mutate: mutateMakeGuess } = useGameGuess();
+
+	useEffect(() => {
+		startGame(
+			{ gameMode: "capitals", format: "endless" },
+			{
+				onSuccess: (data) => {
+					setSessionId(data.sessionId);
+					setImageUrl(`http://localhost:8081/${data.nextImageUrl}`);
+				},
+			}
+		);
+
+		return () => {
+			if (sessionId) {
+				endGame(sessionId);
+			}
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	const capitalizeFirstLetter = (word?: string) => {
+		return String(word).charAt(0).toUpperCase() + String(word).slice(1);
+	};
+
+	const makeGuess = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const formData = new FormData(e.target as HTMLFormElement);
-		const data = formData.get("currentGuess")?.toString();
-		e.currentTarget.reset();
-		if (data?.toString().toLowerCase() === answer?.toLowerCase()) {
-			if (data) {
-				handleGuess(true, data);
+		const currentGuess = formData.get("currentGuess")?.toString();
+
+		console.log("Making guess:", currentGuess);
+
+		mutateMakeGuess(
+			{ sessionId: sessionId || "", guess: currentGuess },
+			{
+				onSuccess: (data) => {
+					if (data.correct) {
+						const formattedWord = capitalizeFirstLetter(currentGuess);
+						setGuessHistory([
+							{
+								name: formattedWord || "",
+								isCorrect: true,
+								timeTaken: Date.now(),
+							},
+							...guessHistory,
+						]);
+						setGuesses((prevGuesses) => [
+							...prevGuesses,
+							{
+								lat: Number(data.correctAnswer.lat),
+								lng: Number(data.correctAnswer.lon),
+								isCorrect: true,
+							},
+						]);
+					} else {
+						const formattedWord = capitalizeFirstLetter(currentGuess);
+						setGuessHistory([
+							{
+								name: formattedWord || "",
+								isCorrect: false,
+								timeTaken: Date.now(),
+							},
+							...guessHistory,
+						]);
+					}
+				},
 			}
-		} else {
-			if (data) {
-				handleGuess(false, data);
-			} else {
-				console.error("This should never happen we dont handle it");
-			}
-		}
+		);
 	};
 
 	return (
 		<div className={classes.componentWrapper}>
 			<div className={classes.flagContainer}>
-				{image && <Image src={image} alt="flag" className={classes.flag} />}
+				{imageUrl && (
+					<div className={classes.imageWrapper}>
+						<Image src={imageUrl} alt="flag" className={classes.flag} fill />
+					</div>
+				)}
 			</div>
-			<form className={classes.form} onSubmit={makeGuess}>
-				<Input
+			<form className={classes.form} onSubmit={makeGuess} noValidate>
+				<InputAutocomplete
+					options={autocompleteOptions}
 					expandHorizontaly
 					placeholder={
 						gameType === "country" ? "Enter country..." : "Enter city..."
@@ -58,22 +129,25 @@ const GuessingGameplaySection = ({
 					name="currentGuess"
 					id="currentGuess"
 					required
-				></Input>
-				<Button>Enter</Button>
+				/>
+				<Button type="submit">Enter</Button>
 			</form>
 			<div className={classes.guessHistoryWrapper}>
-				<p>Guess history</p>
+				<Typography variant="body-1-regular">Guess history</Typography>
 				<div className={classes.guessHistoryContent}>
-					{guessHistory.map((item, index) => {
+					{guessHistory.map((item) => {
 						return (
-							<div
-								key={index}
+							<motion.div
+								initial={{ opacity: 0, scale: 0.95 }}
+								animate={{ opacity: 1, scale: 1 }}
+								key={item.name + item.timeTaken}
+								layout
 								className={`${classes.guess} ${
 									item.isCorrect ? classes.correctGuess : classes.incorrectGuess
 								}`}
 							>
 								{item.name}
-							</div>
+							</motion.div>
 						);
 					})}
 				</div>

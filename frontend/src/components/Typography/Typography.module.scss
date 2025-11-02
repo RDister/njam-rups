@@ -1,138 +1,149 @@
 @use "@/styles/breakpoints.scss" as *;
 
 .heading-1 {
-  font-size: 76px;
-  line-height: 104px;
-  font-weight: bold;
-  letter-spacing: 0.75%;
+	font-size: 76px;
+	line-height: 104px;
+	font-weight: bold;
+	letter-spacing: 0.75%;
 
-  @media (max-width: $breakpoint-md) {
-    font-size: 60px;
-    line-height: 72px;
-  }
+	@media (max-width: $breakpoint-md) {
+		font-size: 60px;
+		line-height: 72px;
+	}
 
-  @media (max-width: $breakpoint-sm) {
-    font-size: 48px;
-    line-height: 64px;
-  }
+	@media (max-width: $breakpoint-sm) {
+		font-size: 48px;
+		line-height: 64px;
+	}
 }
 
 .heading-2 {
-  font-size: 60px;
-  line-height: 72px;
-  font-weight: bold;
+	font-size: 60px;
+	line-height: 72px;
+	font-weight: bold;
 
-  @media (max-width: $breakpoint-md) {
-    font-size: 48px;
-    line-height: 64px;
-  }
+	@media (max-width: $breakpoint-md) {
+		font-size: 48px;
+		line-height: 64px;
+	}
 
-  @media (max-width: $breakpoint-sm) {
-    font-size: 40px;
-    line-height: 48px;
-  }
+	@media (max-width: $breakpoint-sm) {
+		font-size: 40px;
+		line-height: 48px;
+	}
 }
 
 .heading-3 {
-  font-size: 48px;
-  line-height: 64px;
-  font-weight: bold;
+	font-size: 48px;
+	line-height: 64px;
+	font-weight: bold;
 
-  @media (max-width: $breakpoint-md) {
-    font-size: 40px;
-    line-height: 48px;
-  }
+	@media (max-width: $breakpoint-md) {
+		font-size: 40px;
+		line-height: 48px;
+	}
 
-  @media (max-width: $breakpoint-sm) {
-    font-size: 36px;
-    line-height: 40px;
-  }
+	@media (max-width: $breakpoint-sm) {
+		font-size: 36px;
+		line-height: 40px;
+	}
 }
 
 .heading-4 {
-  font-size: 40px;
-  line-height: 48px;
-  font-weight: bold;
+	font-size: 40px;
+	line-height: 48px;
+	font-weight: bold;
 
-  @media (max-width: $breakpoint-md) {
-    font-size: 36px;
-    line-height: 40px;
-  }
+	@media (max-width: $breakpoint-md) {
+		font-size: 36px;
+		line-height: 40px;
+	}
 
-  @media (max-width: $breakpoint-sm) {
-    font-size: 24px;
-    line-height: 36px;
-  }
+	@media (max-width: $breakpoint-sm) {
+		font-size: 24px;
+		line-height: 36px;
+	}
 }
 
 .heading-4-regular {
-  font-size: 40px;
-  line-height: 48px;
-  font-weight: 500;
+	font-size: 40px;
+	line-height: 48px;
+	font-weight: 500;
 
-  @media (max-width: $breakpoint-md) {
-    font-size: 32px;
-    line-height: 40px;
-  }
+	@media (max-width: $breakpoint-md) {
+		font-size: 32px;
+		line-height: 40px;
+	}
 
-  @media (max-width: $breakpoint-sm) {
-    font-size: 24px;
-    line-height: 36px;
-  }
+	@media (max-width: $breakpoint-sm) {
+		font-size: 24px;
+		line-height: 36px;
+	}
+}
+
+.heading-5 {
+	font-size: 32px;
+	line-height: 40px;
+	font-weight: bold;
+
+	@media (max-width: $breakpoint-sm) {
+		font-size: 24px;
+		line-height: 36px;
+	}
 }
 
 .subheading-1 {
-  font-size: 22px;
-  line-height: 40px;
-  font-weight: 400;
+	font-size: 22px;
+	line-height: 40px;
+	font-weight: 400;
 
-  @media (max-width: $breakpoint-sm) {
-    font-size: 18px;
-    line-height: 36px;
-  }
+	@media (max-width: $breakpoint-sm) {
+		font-size: 18px;
+		line-height: 36px;
+	}
 }
 
 .subheading-2 {
-  font-size: 18px;
-  line-height: 28px;
-  font-weight: bold;
+	font-size: 18px;
+	line-height: 28px;
+	font-weight: bold;
 
-  @media (max-width: $breakpoint-sm) {
-    font-size: 16px;
-    line-height: 24px;
-  }
+	@media (max-width: $breakpoint-sm) {
+		font-size: 16px;
+		line-height: 24px;
+	}
 }
 
 .body-1 {
-  font-size: 16px;
-  line-height: 28px;
-  font-weight: bold;
+	font-size: 16px;
+	line-height: 28px;
+	font-weight: bold;
 
-  @media (max-width: $breakpoint-sm) {
-    font-size: 14px;
-    line-height: 26px;
-  }
+	@media (max-width: $breakpoint-sm) {
+		font-size: 14px;
+		line-height: 26px;
+	}
 }
 
 .body-1-regular {
-  font-size: 16px;
-  line-height: 28px;
-  font-weight: 400;
+	font-size: 16px;
+	line-height: 28px;
+	font-weight: 400;
 
-  @media (max-width: $breakpoint-sm) {
-    font-size: 14px;
-    line-height: 26px;
-  }
+	@media (max-width: $breakpoint-sm) {
+		font-size: 14px;
+		line-height: 26px;
+	}
 }
 
 .body-2 {
-  font-size: 14px;
-  line-height: 24px;
-  font-weight: 600;
+	font-size: 14px;
+	line-height: 24px;
+	font-weight: 600;
 }
 
 .body-2-regular {
-  font-size: 14px;
-  line-height: 24px;
-  font-weight: 400;
+	font-size: 14px;
+	line-height: 24px;
+	font-weight: 400;
 }
