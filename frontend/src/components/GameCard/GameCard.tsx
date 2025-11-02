@@ -3,13 +3,13 @@ import Image, { StaticImageData } from "next/image";
 import Typography from "../Typography/Typography";
 import Button from "../Button/Button";
 import classes from "./GameCard.module.scss";
-import { useModalState } from "@/store/startGameModal";
+import { GameType, useModalState } from "@/store/startGameModal";
 
 interface GameCardProps {
 	title: string;
 	description: string;
 	imageUrl: string | StaticImageData;
-	gamemode: "country" | "city" | "geoguesser";
+	gamemode: GameType;
 	toggleModal: () => void;
 }
 
