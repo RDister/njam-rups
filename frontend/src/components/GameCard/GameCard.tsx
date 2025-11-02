@@ -2,8 +2,6 @@ import { memo } from "react";
 import Image, { StaticImageData } from "next/image";
 import Typography from "../Typography/Typography";
 import Button from "../Button/Button";
-import Link from "next/link";
-import { useStore } from "zustand";
 import classes from "./GameCard.module.scss";
 import { useModalState } from "@/store/startGameModal";
 
