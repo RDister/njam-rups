@@ -59,8 +59,8 @@ public class GameSessionController {
             // Generate first question
             Answer firstQuestion = gameLogicService.startNewQuestion(session.getId());
             
-            // Build response - first question, so no previous answer
             GuessResponse response = GuessResponse.builder()
+                .sessionId(session.getId())
                 .correct(null)              
                 .correctAnswer(null)       
                 .pointsEarned(null)        

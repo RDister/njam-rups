@@ -69,6 +69,7 @@ public class GameLogicService {
         }
         
         return GuessResponse.builder()
+            .sessionId(session.getId())
             .correct(isCorrect)
             .correctAnswer(isCorrect ? currentAnswer : null) 
             .pointsEarned(pointsEarned)
@@ -124,6 +125,7 @@ public class GameLogicService {
         String distanceDescription = getDistanceDescription(distanceKm);
         
         return SightsGuessResponse.builder()
+            .sessionId(session.getId())
             .correct(isCorrect)
             .correctAnswer(correctAnswer)
             .pointsEarned(pointsEarned)
@@ -225,12 +227,20 @@ public class GameLogicService {
         };
     }
     
-    //TODO slike se dodaj v neki folder in mapiraj na vse arraye!!!
     public String generateImageUrl(String gameMode, Answer answer) {
         return switch (gameMode.toLowerCase()) {
-            case "flags" -> "/GuessTheCountry/" + answer.getName() + ".png";
-            case "capitals" -> "/GuessTheCapital/" + answer.getCountry() + ".png";
-            case "sights" -> "/GuessTheLandmark/" + answer.getName().replace(" ", "_") + ".jpg";
+            case "flags" -> {
+                int index = CountriesData.COUNTRIES.indexOf(answer);
+                yield "/images/flags/flag" + (index + 1) + ".png";
+            }
+            case "capitals" -> {
+                int index = CapitalsData.CAPITALS.indexOf(answer);
+                yield "/images/capitals/capital" + (index + 1) + ".png";
+            }
+            case "sights" -> {
+                int index = LandmarksData.LANDMARKS.indexOf(answer);
+                yield "/images/sights/sight" + (index + 1) + ".jpg";
+            }
             default -> null;
         };
     }

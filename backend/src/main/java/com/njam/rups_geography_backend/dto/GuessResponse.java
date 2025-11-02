@@ -13,6 +13,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class GuessResponse {
     
+    private String sessionId;
+    
     private Boolean correct;
     
     private Answer correctAnswer;
