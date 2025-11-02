@@ -1,11 +1,13 @@
 import { create } from "zustand";
 
+export type GameType = "country" | "city" | "landmark";
+
 interface ModalState {
-  currentGame: string;
-  setGameModal: (game: string) => void;
+	currentGame: GameType;
+	setGameModal: (game: GameType) => void;
 }
 
 export const useModalState = create<ModalState>()((set) => ({
-  currentGame: "",
-  setGameModal: (game) => set({ currentGame: game }),
+	currentGame: "country",
+	setGameModal: (game) => set({ currentGame: game }),
 }));
