@@ -10,7 +10,7 @@ import {
 } from "@vis.gl/react-google-maps";
 import colors from "@/styles/variables";
 
-interface MapGuess {
+export interface MapGuess {
 	lat: number;
 	lng: number;
 	isCorrect: boolean;
