@@ -1,5 +1,7 @@
 package com.njam.rups_geography_backend.services;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.njam.rups_geography_backend.data.CapitalsData;
@@ -40,10 +42,10 @@ public class GameLogicService {
         boolean isCorrect = checkTextAnswer(request.getGuess(), session.getCurrentCorrectAnswer().getName());
         int pointsEarned = isCorrect ? 1 : 0;
         
-        Answer currentAnswer = session.getCurrentCorrectAnswer();
-        String currentImageUrl = generateImageUrl(session.getGameMode(), currentAnswer);
+        Answer correctAnswer = session.getCurrentCorrectAnswer();
+        Answer userAnswer = isCorrect ? correctAnswer : findAnswerByName(session.getGameMode(), request.getGuess());
+        String currentImageUrl = generateImageUrl(session.getGameMode(), correctAnswer);
         
-        // Update session only if correct
         if (isCorrect) {
             session.setScore(session.getScore() + pointsEarned);
             session.setCurrentQuestionNumber(session.getCurrentQuestionNumber() + 1);
@@ -71,7 +73,7 @@ public class GameLogicService {
         return GuessResponse.builder()
             .sessionId(session.getId())
             .correct(isCorrect)
-            .correctAnswer(isCorrect ? currentAnswer : null) 
+            .answer(userAnswer) 
             .pointsEarned(pointsEarned)
             .score(session.getScore())
             .questionNumber(session.getCurrentQuestionNumber())
@@ -127,7 +129,7 @@ public class GameLogicService {
         return SightsGuessResponse.builder()
             .sessionId(session.getId())
             .correct(isCorrect)
-            .correctAnswer(correctAnswer)
+            .answer(correctAnswer)
             .pointsEarned(pointsEarned)
             .score(session.getScore())
             .questionNumber(session.getCurrentQuestionNumber())
@@ -157,12 +159,33 @@ public class GameLogicService {
     }
     
 
-    //Helper za primerjanje stringov
     private boolean checkTextAnswer(String userGuess, String correctAnswer) {
         if (userGuess == null || correctAnswer == null) {
             return false;
         }
         return userGuess.trim().equalsIgnoreCase(correctAnswer.trim());
+    }
+    
+    private Answer findAnswerByName(String gameMode, String name) {
+        if (name == null) {
+            return null;
+        }
+        
+        List<Answer> answerList = switch (gameMode.toLowerCase()) {
+            case "flags" -> CountriesData.COUNTRIES;
+            case "capitals" -> CapitalsData.CAPITALS;
+            case "sights" -> LandmarksData.LANDMARKS;
+            default -> null;
+        };
+        
+        if (answerList == null) {
+            return null;
+        }
+        
+        return answerList.stream()
+            .filter(a -> name.trim().equalsIgnoreCase(a.getName().trim()))
+            .findFirst()
+            .orElse(null);
     }
     
 
