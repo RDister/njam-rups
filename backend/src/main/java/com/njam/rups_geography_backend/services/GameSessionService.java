@@ -83,4 +83,12 @@ public class GameSessionService {
     public boolean sessionExists(String sessionId) {
         return sessionRepository.existsById(sessionId);
     }
+    
+    //Posodobimo session (shranimo spremembe)
+    public GameSession updateSession(GameSession session) {
+        session.updateActivity(); // Reset TTL
+        GameSession updated = sessionRepository.save(session);
+        log.debug("Updated session: {}", session.getId());
+        return updated;
+    }
 }
