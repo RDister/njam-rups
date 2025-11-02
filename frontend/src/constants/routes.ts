@@ -6,3 +6,7 @@ export const Routes = {
 } as const;
 
 export type Route = (typeof Routes)[keyof typeof Routes];
+
+export const ApiRoutes = {
+	test: () => `/api/test` as const,
+} as const;
