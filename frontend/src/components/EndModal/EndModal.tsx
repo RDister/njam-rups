@@ -14,7 +14,7 @@ import classes from "./EndModal.module.scss";
 import colors from "@/styles/variables";
 
 const EndModal = () => {
-	const testScore = 8; // will be replaced with actual score once gameplay is done
+	const testScore = 2; // will be replaced with actual score once gameplay is done
 	const [animatedScore, setAnimatedScore] = useState(0);
 
 	useEffect(() => {

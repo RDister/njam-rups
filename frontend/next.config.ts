@@ -4,6 +4,9 @@ const API_URL = "http://localhost:8081";
 
 const nextConfig: NextConfig = {
 	output: "standalone",
+	images: {
+		domains: ["localhost"],
+	},
 	async rewrites() {
 		return [
 			{

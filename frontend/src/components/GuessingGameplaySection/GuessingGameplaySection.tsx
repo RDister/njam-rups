@@ -1,17 +1,26 @@
 "use client";
 
-import { memo, useState } from "react";
+import {
+	Dispatch,
+	FormEvent,
+	memo,
+	SetStateAction,
+	useEffect,
+	useState,
+} from "react";
 import Image from "next/image";
-import albaniaFlag from "../../../public/GuessTheCountry/image.png";
-import classes from "./GuessingGameplaySection.module.scss";
 import Button from "../Button/Button";
-import Input from "../Input/Input";
 import Typography from "../Typography/Typography";
 import { motion } from "framer-motion";
+import { useGameEnd, useGameGuess, useGameStart } from "@/api/game/hooks";
+import classes from "./GuessingGameplaySection.module.scss";
+import InputAutocomplete from "../Input/InputAutocomplete/InputAutocomplete";
+import { MapGuess } from "../GameMap/GameMap";
 
 interface GuessingGameplaySectionProps {
 	gameType: "country" | "city";
-	answer: string;
+	setGuesses: Dispatch<SetStateAction<MapGuess[]>>;
+	autocompleteOptions: string[];
 }
 
 interface GuessItem {
@@ -22,50 +31,97 @@ interface GuessItem {
 
 const GuessingGameplaySection = ({
 	gameType,
-	answer,
+	setGuesses,
+	autocompleteOptions,
 }: GuessingGameplaySectionProps) => {
 	const [guessHistory, setGuessHistory] = useState<GuessItem[]>([]);
+	const [sessionId, setSessionId] = useState<string | null>(null);
+	const [imageUrl, setImageUrl] = useState("");
 
-	const capitalizeFirstLetter = (word: string) => {
+	const { mutate: startGame } = useGameStart();
+	const { mutate: endGame } = useGameEnd();
+	const { mutate: mutateMakeGuess } = useGameGuess();
+
+	useEffect(() => {
+		startGame(
+			{ gameMode: "capitals", format: "endless" },
+			{
+				onSuccess: (data) => {
+					setSessionId(data.sessionId);
+					setImageUrl(`http://localhost:8081/${data.nextImageUrl}`);
+				},
+			}
+		);
+
+		return () => {
+			if (sessionId) {
+				endGame(sessionId);
+			}
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	const capitalizeFirstLetter = (word?: string) => {
 		return String(word).charAt(0).toUpperCase() + String(word).slice(1);
 	};
 
-	const makeGuess = (e: React.FormEvent<HTMLFormElement>) => {
+	const makeGuess = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const formData = new FormData(e.target as HTMLFormElement);
-		const data = formData.get("currentGuess")?.toString();
-		e.currentTarget.reset();
+		const currentGuess = formData.get("currentGuess")?.toString();
 
-		if (data?.toString().toLowerCase() === answer.toLowerCase()) {
-			const formattedWord = capitalizeFirstLetter(data);
-			setGuessHistory([
-				{ name: formattedWord || "", isCorrect: true, timeTaken: Date.now() },
-				...guessHistory,
-			]);
-		} else {
-			if (data) {
-				const formattedWord = capitalizeFirstLetter(data);
-				setGuessHistory([
-					{
-						name: formattedWord || "",
-						isCorrect: false,
-						timeTaken: Date.now(),
-					},
-					...guessHistory,
-				]);
-			} else {
-				console.log("This should never happen we dont handle it");
+		console.log("Making guess:", currentGuess);
+
+		mutateMakeGuess(
+			{ sessionId: sessionId || "", guess: currentGuess },
+			{
+				onSuccess: (data) => {
+					if (data.correct) {
+						const formattedWord = capitalizeFirstLetter(currentGuess);
+						setGuessHistory([
+							{
+								name: formattedWord || "",
+								isCorrect: true,
+								timeTaken: Date.now(),
+							},
+							...guessHistory,
+						]);
+						setGuesses((prevGuesses) => [
+							...prevGuesses,
+							{
+								lat: Number(data.correctAnswer.lat),
+								lng: Number(data.correctAnswer.lon),
+								isCorrect: true,
+							},
+						]);
+					} else {
+						const formattedWord = capitalizeFirstLetter(currentGuess);
+						setGuessHistory([
+							{
+								name: formattedWord || "",
+								isCorrect: false,
+								timeTaken: Date.now(),
+							},
+							...guessHistory,
+						]);
+					}
+				},
 			}
-		}
+		);
 	};
 
 	return (
 		<div className={classes.componentWrapper}>
 			<div className={classes.flagContainer}>
-				<Image src={albaniaFlag} alt="flag" className={classes.flag} />
+				{imageUrl && (
+					<div className={classes.imageWrapper}>
+						<Image src={imageUrl} alt="flag" className={classes.flag} fill />
+					</div>
+				)}
 			</div>
 			<form className={classes.form} onSubmit={makeGuess} noValidate>
-				<Input
+				<InputAutocomplete
+					options={autocompleteOptions}
 					expandHorizontaly
 					placeholder={
 						gameType === "country" ? "Enter country..." : "Enter city..."

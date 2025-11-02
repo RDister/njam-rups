@@ -10,11 +10,15 @@
 	border-radius: 24px;
 }
 
-.flag {
-	width: 100%;
+.imageWrapper {
+	width: auto;
 	height: 300px;
 	border-radius: 24px;
+	position: relative;
+}
+.flag {
 	object-fit: cover;
+	border-radius: 24px;
 }
 
 .form {
