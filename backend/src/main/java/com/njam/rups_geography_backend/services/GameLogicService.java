@@ -278,7 +278,7 @@ public class GameLogicService {
             }
             case "sights" -> {
                 int index = LandmarksData.LANDMARKS.indexOf(answer);
-                yield "/images/sights/sight" + (index + 1) + ".jpg";
+                yield "/images/sights/sight" + (index + 1) + ".png";
             }
             default -> null;
         };

@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { gameEnd, gameGuess, gameStart } from ".";
+import { gameEnd, gameGuess, gameStart, sightsGameGuess } from ".";
 
 export const useGameStart = () => {
 	return useMutation({
@@ -22,5 +22,14 @@ export const useGameEnd = () => {
 export const useGameGuess = () => {
 	return useMutation({
 		mutationFn: gameGuess,
+	});
+};
+
+export const useSightsGameGuess = () => {
+	return useMutation({
+		mutationFn: sightsGameGuess,
+		onSuccess: (data) => {
+			console.log("Guess submitted successfully:", data);
+		},
 	});
 };

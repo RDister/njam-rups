@@ -6,68 +6,114 @@ import classes from "./GuessTheLandmarkPage.module.scss";
 import GuessTheLandmarkMap from "./components/GuessTheLandmarkMap/GuessTheLandmarkMap";
 import Button from "@/components/Button/Button";
 import Typography from "@/components/Typography/Typography";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useGameStart, useGameEnd, useSightsGameGuess } from "@/api/game/hooks";
+import { useSearchParams } from "next/navigation";
+import { GameFormat } from "@/api/models/game/GameModel";
+import EndModal from "@/components/EndModal/EndModal";
 
 const GuessTheLandmarkPage = () => {
-	const [sightImageUrl, setSightImageUrl] = useState<string>("");
-	const [nextSightImageUrl, setNextSightImageUrl] = useState<string>("");
+	const [sessionId, setSessionId] = useState<string>("");
 
-	const [guessPosition, setGuessPosition] =
+	const [imageUrl, setImageUrl] = useState("");
+	const [nextImageUrl, setNextImageUrl] = useState("");
+
+	const [currentGuess, setCurrentGuess] =
 		useState<google.maps.LatLngLiteral | null>(null);
-
 	const [goalPosition, setGoalPosition] =
 		useState<google.maps.LatLngLiteral | null>(null);
-	const [distance, setDistance] = useState<number | null>(null);
-	const [points, setPoints] = useState<number | null>(null);
+	const [distanceFromGoal, setDistanceFromGoal] = useState<number | null>(null);
+	const [score, setScore] = useState<number | null>(null);
+	const [totalScore, setTotalScore] = useState<number>(0);
+	const [isGameOver, setIsGameOver] = useState(false);
 
-	const initGame = () => {
-		// Call API start game
-		const response = {
-			nextImageUrl: "public/guessTheCountry/albania.png",
+	const searchParams = useSearchParams();
+	const gameModeParam = searchParams.get("mode") as GameFormat | null;
+
+	const { mutate: startGame } = useGameStart();
+	const { mutate: endGame } = useGameEnd();
+	const { mutate: mutateMakeGuess } = useSightsGameGuess();
+
+	useEffect(() => {
+		if (!gameModeParam) return;
+
+		startGame(
+			{ gameMode: "sights", format: gameModeParam },
+			{
+				onSuccess: (data) => {
+					setSessionId(data.sessionId);
+					setImageUrl(`http://localhost:8081/${data.nextImageUrl}`);
+				},
+			}
+		);
+
+		return () => {
+			if (sessionId) {
+				endGame(sessionId);
+			}
 		};
-		//setSightImageUrl(response.nextImageUrl);
-	};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [gameModeParam]);
 
-	const sendGuess = (guess: google.maps.LatLngLiteral) => {
-		// API CALL
+	const makeGuess = (guess: google.maps.LatLngLiteral) => {
+		console.log("Making guess:", guess);
 
-		const response = {
-			distanceKm: 50.32,
-			score: 831,
-			answer: { lat: 48.858093, lon: 2.294694 },
-			nextImageUrl: "public/guessTheCountry/albania.png",
-		};
+		mutateMakeGuess(
+			{
+				sessionId: sessionId || "",
+				lat: guess.lat,
+				lon: guess.lng,
+			},
+			{
+				onSuccess: (data) => {
+					setGoalPosition({ lat: data.answer.lat, lng: data.answer.lon });
+					setDistanceFromGoal(data.distanceKm);
+					setScore(data.pointsEarned);
+					setTotalScore(data.score);
 
-		setDistance(response.distanceKm);
-		setPoints(response.score);
-		setGoalPosition({ lat: response.answer.lat, lng: response.answer.lon });
-		//setNextSightImageUrl(response.nextImageUrl);
+					if (data.gameOver) {
+						setIsGameOver(true);
+						return;
+					}
+
+					setNextImageUrl(`http://localhost:8081/${data.nextImageUrl}`);
+				},
+			}
+		);
 	};
 
 	const nextRound = () => {
-		setGuessPosition(null);
-		setDistance(null);
-		setPoints(null);
+		setCurrentGuess(null);
 		setGoalPosition(null);
-		setSightImageUrl(nextSightImageUrl);
+		setDistanceFromGoal(null);
+		setScore(null);
+		setImageUrl(nextImageUrl);
 	};
-
-	useEffect(() => {
-		initGame();
-	}, []);
 
 	return (
 		<main className={classes.pageWrapper}>
+			<AnimatePresence>
+				{isGameOver && <EndModal score={totalScore} maxScore={10000} />}
+			</AnimatePresence>
 			<section className={classes.sightSection}>
-				{sightImageUrl && (
-					<Image src={sightImageUrl} alt={"sight image"} fill />
-				)}
+				<div className={classes.imageWrapper}>
+					<AnimatePresence mode="popLayout">
+						{imageUrl && (
+							<Image
+								src={imageUrl}
+								className={classes.sightImage}
+								alt={"sight image"}
+								fill
+							/>
+						)}
+					</AnimatePresence>
+				</div>
 			</section>
 			<section className={classes.right}>
 				<section className={classes.mapSection}>
 					<GuessTheLandmarkMap
-						guessPosition={guessPosition}
-						onGuessPositionChange={setGuessPosition}
+						guessPosition={currentGuess}
+						onGuessPositionChange={setCurrentGuess}
 						disableGuessing={goalPosition != null}
 						goalPosition={goalPosition}
 					/>
@@ -81,7 +127,7 @@ const GuessTheLandmarkPage = () => {
 							exit={{ opacity: 0 }}
 							transition={{ duration: 0.5 }}
 						>
-							<Typography>{distance} km</Typography>
+							<Typography>{distanceFromGoal?.toFixed(2)} km</Typography>
 							<Typography>from target</Typography>
 						</motion.div>
 					)}
@@ -93,9 +139,9 @@ const GuessTheLandmarkPage = () => {
 						transition={{ duration: 0.3, ease: "easeInOut" }}
 						className={classes.button}
 						onClick={() =>
-							goalPosition ? nextRound() : sendGuess(guessPosition!)
+							goalPosition ? nextRound() : makeGuess(currentGuess!)
 						}
-						disabled={guessPosition == null}
+						disabled={currentGuess == null}
 					>
 						{goalPosition ? "Next" : "Confirm guess"}
 					</Button>
@@ -107,7 +153,7 @@ const GuessTheLandmarkPage = () => {
 							exit={{ opacity: 0 }}
 							transition={{ duration: 0.5 }}
 						>
-							<Typography>{points}</Typography>
+							<Typography>{score}</Typography>
 							<Typography>of 1000 points</Typography>
 						</motion.div>
 					)}

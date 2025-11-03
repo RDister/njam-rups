@@ -48,3 +48,24 @@ export const gameGuess = async ({
 
 	return response?.data;
 };
+
+export const sightsGameGuess = async ({
+	sessionId,
+	guess,
+	lat,
+	lon,
+}: {
+	sessionId: string;
+	guess?: string;
+	lat?: number;
+	lon?: number;
+}) => {
+	const response = await instance.post<GameGuess>(ApiRoutes.sightsGameGuess(), {
+		sessionId,
+		guess,
+		lat,
+		lon,
+	});
+
+	return response?.data;
+};

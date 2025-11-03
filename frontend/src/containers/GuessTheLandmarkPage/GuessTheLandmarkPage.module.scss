@@ -10,6 +10,18 @@
 	}
 }
 
+.imageWrapper {
+	width: auto;
+	height: 100%;
+	border-radius: 24px;
+	position: relative;
+	overflow: hidden;
+}
+
+.sightImage {
+	object-fit: cover;
+}
+
 .sightSection {
 	border-radius: calc(40px - 22px);
 	background-color: gray;
