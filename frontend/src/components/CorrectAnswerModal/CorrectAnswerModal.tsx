@@ -1,4 +1,4 @@
-import { Dispatch, memo, SetStateAction } from "react";
+import { Dispatch, memo, SetStateAction, useEffect } from "react";
 import { motion } from "framer-motion";
 import Typography from "../Typography/Typography";
 import Button from "../Button/Button";
@@ -13,6 +13,18 @@ const CorrectAnswerModal = ({
 	setIsAnswerModalOpen,
 	answer,
 }: CorrectAnswerModalProps) => {
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (e.key === "Enter" || e.key === " ") {
+				setIsAnswerModalOpen(false);
+			}
+		};
+		window.addEventListener("keydown", handleKeyDown);
+		return () => {
+			window.removeEventListener("keydown", handleKeyDown);
+		};
+	}, [setIsAnswerModalOpen]);
+
 	return (
 		<motion.div
 			initial={{ opacity: 0 }}
@@ -40,7 +52,11 @@ const CorrectAnswerModal = ({
 						{answer}
 					</Typography>
 				</section>
-				<Button fullWidth onClick={() => setIsAnswerModalOpen(false)}>
+				<Button
+					fullWidth
+					tabIndex={0}
+					onClick={() => setIsAnswerModalOpen(false)}
+				>
 					Close
 				</Button>
 			</motion.div>

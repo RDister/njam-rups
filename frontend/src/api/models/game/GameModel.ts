@@ -20,6 +20,7 @@ export interface GameStart {
 	nextImageUrl: string;
 	distanceKm: number;
 	distanceDescription: string;
+	hint?: string;
 }
 
 export type GameGuess = GameStart;

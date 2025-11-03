@@ -10,6 +10,44 @@
 	border-radius: 24px;
 }
 
+.hint {
+	position: absolute;
+	bottom: 10px;
+	left: 10px;
+	background-color: var(--neutral-200);
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: var(--color-icon-primary);
+	z-index: 2;
+	cursor: pointer;
+}
+
+.hintTooltip {
+	visibility: hidden;
+	opacity: 0;
+	background: var(--neutral-600);
+	color: #fff;
+	text-align: center;
+	border-radius: 18px;
+	padding: 6px 12px;
+	position: absolute;
+	left: 260%;
+	transform: translateX(-50%);
+	z-index: 10;
+	transition: opacity 0.2s;
+	pointer-events: none;
+	white-space: nowrap;
+}
+
+.hint:hover .hintTooltip {
+	visibility: visible;
+	opacity: 1;
+}
+
 .imageWrapper {
 	width: auto;
 	height: 300px;

@@ -21,6 +21,8 @@ import { Routes } from "@/constants/routes";
 import { GameFormat, GameMode } from "@/api/models/game/GameModel";
 import CorrectAnswerModal from "../CorrectAnswerModal/CorrectAnswerModal";
 import EndModal from "../EndModal/EndModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faQuestion } from "@fortawesome/free-solid-svg-icons";
 
 interface GuessingGameplaySectionProps {
 	gameType: "country" | "city";
@@ -45,6 +47,7 @@ const GuessingGameplaySection = ({
 	const [currentGuess, setCurrentGuess] = useState("");
 	const [correctAnswer, setCorrectAnswer] = useState("");
 	const [score, setScore] = useState(0);
+	const [hint, setHint] = useState("");
 
 	const [isGameOver, setIsGameOver] = useState(false);
 
@@ -97,8 +100,6 @@ const GuessingGameplaySection = ({
 	const makeGuess = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		console.log("Making guess:", currentGuess);
-
 		if (!currentGuess || currentGuess.trim() === "") {
 			console.log("Empty guess, not submitting");
 			return;
@@ -109,6 +110,10 @@ const GuessingGameplaySection = ({
 			{
 				onSuccess: (data) => {
 					setCurrentGuess("");
+
+					if (data.hint) {
+						setHint(data.hint);
+					}
 
 					setScore(data.score);
 
@@ -142,6 +147,7 @@ const GuessingGameplaySection = ({
 						setCurrentGuess("");
 						setGuesses([]);
 						setGuessHistory([]);
+						setHint("");
 						setImageUrl(`http://localhost:8081/${data.nextImageUrl}`);
 					} else {
 						const formattedWord = capitalizeFirstLetter(currentGuess);
@@ -182,6 +188,24 @@ const GuessingGameplaySection = ({
 				{isGameOver && <EndModal score={score} maxScore={10} />}
 			</AnimatePresence>
 			<div className={classes.flagContainer}>
+				<AnimatePresence>
+					{hint && (
+						<motion.div
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							exit={{ opacity: 0 }}
+							className={classes.hint}
+						>
+							<FontAwesomeIcon icon={faQuestion} />
+							<Typography
+								variant="body-2-regular"
+								className={classes.hintTooltip}
+							>
+								First letter is {hint}
+							</Typography>
+						</motion.div>
+					)}
+				</AnimatePresence>
 				<AnimatePresence mode="popLayout">
 					{imageUrl && (
 						<motion.div
