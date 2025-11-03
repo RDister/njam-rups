@@ -16,6 +16,9 @@ import { useGameEnd, useGameGuess, useGameStart } from "@/api/game/hooks";
 import classes from "./GuessingGameplaySection.module.scss";
 import InputAutocomplete from "../Input/InputAutocomplete/InputAutocomplete";
 import { MapGuess } from "../GameMap/GameMap";
+import { usePathname } from "next/navigation";
+import { Routes } from "@/constants/routes";
+import { GameFormat, GameMode } from "@/api/models/game/GameModel";
 
 interface GuessingGameplaySectionProps {
 	gameType: "country" | "city";
@@ -37,14 +40,36 @@ const GuessingGameplaySection = ({
 	const [guessHistory, setGuessHistory] = useState<GuessItem[]>([]);
 	const [sessionId, setSessionId] = useState<string | null>(null);
 	const [imageUrl, setImageUrl] = useState("");
+	const [currentGuess, setCurrentGuess] = useState("");
 
 	const { mutate: startGame } = useGameStart();
 	const { mutate: endGame } = useGameEnd();
 	const { mutate: mutateMakeGuess } = useGameGuess();
 
+	const [currentGame, setCurrentGame] = useState<GameMode>();
+	const [currentGameFormat, setCurrentGameFormat] = useState<GameFormat>();
+	const pathname = usePathname();
+
 	useEffect(() => {
+		if (pathname.includes(Routes.GUESS_THE_COUNTRY)) {
+			setCurrentGame("flags");
+		} else if (pathname.includes(Routes.GUESS_THE_CAPITAL)) {
+			setCurrentGame("capitals");
+		}
+
+		/* if (pathname.includes("test")) {
+			setCurrentGameFormat("classic");
+		} else if (pathname.includes("practice")) {
+			setCurrentGameFormat("endless");
+		} */
+	}, [pathname]);
+
+	useEffect(() => {
+		if (!currentGame) return;
+		//if (!currentGameFormat) return;
+
 		startGame(
-			{ gameMode: "capitals", format: "endless" },
+			{ gameMode: currentGame, format: "classic" },
 			{
 				onSuccess: (data) => {
 					setSessionId(data.sessionId);
@@ -59,7 +84,7 @@ const GuessingGameplaySection = ({
 			}
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [currentGame, currentGameFormat]);
 
 	const capitalizeFirstLetter = (word?: string) => {
 		return String(word).charAt(0).toUpperCase() + String(word).slice(1);
@@ -67,15 +92,21 @@ const GuessingGameplaySection = ({
 
 	const makeGuess = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const formData = new FormData(e.target as HTMLFormElement);
-		const currentGuess = formData.get("currentGuess")?.toString();
 
 		console.log("Making guess:", currentGuess);
+
+		if (!currentGuess || currentGuess.trim() === "") {
+			console.log("Empty guess, not submitting");
+			return;
+		}
 
 		mutateMakeGuess(
 			{ sessionId: sessionId || "", guess: currentGuess },
 			{
 				onSuccess: (data) => {
+					// Clear the form after successful submission
+					setCurrentGuess("");
+
 					if (data.correct) {
 						const formattedWord = capitalizeFirstLetter(currentGuess);
 						setGuessHistory([
@@ -89,8 +120,8 @@ const GuessingGameplaySection = ({
 						setGuesses((prevGuesses) => [
 							...prevGuesses,
 							{
-								lat: Number(data.correctAnswer.lat),
-								lng: Number(data.correctAnswer.lon),
+								lat: Number(data.answer.lat),
+								lng: Number(data.answer.lon),
 								isCorrect: true,
 							},
 						]);
@@ -103,6 +134,15 @@ const GuessingGameplaySection = ({
 								timeTaken: Date.now(),
 							},
 							...guessHistory,
+						]);
+						if (data.answer.lat == null) return;
+						setGuesses((prevGuesses) => [
+							...prevGuesses,
+							{
+								lat: Number(data.answer.lat),
+								lng: Number(data.answer.lon),
+								isCorrect: false,
+							},
 						]);
 					}
 				},
@@ -128,6 +168,8 @@ const GuessingGameplaySection = ({
 					}
 					name="currentGuess"
 					id="currentGuess"
+					value={currentGuess}
+					onChange={(value) => setCurrentGuess(value)}
 					required
 				/>
 				<Button type="submit">Enter</Button>

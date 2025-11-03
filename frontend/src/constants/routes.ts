@@ -8,9 +8,9 @@ export const Routes = {
 export type Route = (typeof Routes)[keyof typeof Routes];
 
 export const ApiRoutes = {
-	test: () => `/api/test` as const,
-	gameStart: () => `/api/api/game/start` as const,
+	test: () => `/test` as const,
+	gameStart: () => `/api/game/start` as const,
 	gameEnd: ({ sessionId }: { sessionId: string }) =>
-		`/api/api/game/end/${sessionId}` as const,
-	gameGuess: () => `/api/api/game/guess` as const,
+		`/api/game/end/${sessionId}` as const,
+	gameGuess: () => `/api/game/guess` as const,
 } as const;
