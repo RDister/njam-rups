@@ -16,6 +16,9 @@ import { useGameEnd, useGameGuess, useGameStart } from "@/api/game/hooks";
 import classes from "./GuessingGameplaySection.module.scss";
 import InputAutocomplete from "../Input/InputAutocomplete/InputAutocomplete";
 import { MapGuess } from "../GameMap/GameMap";
+import { usePathname } from "next/navigation";
+import { Routes } from "@/constants/routes";
+import { GameMode } from "@/api/models/game/GameModel";
 
 interface GuessingGameplaySectionProps {
 	gameType: "country" | "city";
@@ -42,9 +45,22 @@ const GuessingGameplaySection = ({
 	const { mutate: endGame } = useGameEnd();
 	const { mutate: mutateMakeGuess } = useGameGuess();
 
+	const [currentGame, setCurrentGame] = useState<GameMode>();
+	const pathname = usePathname();
+
 	useEffect(() => {
+		if (pathname.includes(Routes.GUESS_THE_COUNTRY)) {
+			setCurrentGame("flags");
+		} else if (pathname.includes(Routes.GUESS_THE_CAPITAL)) {
+			setCurrentGame("capitals");
+		}
+	}, [pathname]);
+
+	useEffect(() => {
+		if (!currentGame) return;
+
 		startGame(
-			{ gameMode: "capitals", format: "endless" },
+			{ gameMode: currentGame, format: "endless" },
 			{
 				onSuccess: (data) => {
 					setSessionId(data.sessionId);
@@ -59,7 +75,7 @@ const GuessingGameplaySection = ({
 			}
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [currentGame]);
 
 	const capitalizeFirstLetter = (word?: string) => {
 		return String(word).charAt(0).toUpperCase() + String(word).slice(1);

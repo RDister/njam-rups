@@ -1,53 +1,30 @@
 "use client";
 
-import { memo, useEffect, useState } from "react";
-import GuessingGameplaySection, {
-	GuessItem,
-} from "@/components/GuessingGameplaySection/GuessingGameplaySection";
-import { Country, europeanCountries } from "@/data/europeanCountries";
+import { memo, useState } from "react";
+import GuessingGameplaySection from "@/components/GuessingGameplaySection/GuessingGameplaySection";
+import { europeanCountries } from "@/data/europeanCountries";
 import classes from "./GuessTheCountryPage.module.scss";
+import GameMap, { MapGuess } from "@/components/GameMap/GameMap";
+import { AnimatePresence } from "framer-motion";
+import EndModal from "@/components/EndModal/EndModal";
 
 const GuessTheCountryPage = () => {
-	const [guessHistory, setGuessHistory] = useState<GuessItem[]>([]);
-	const [currentCountry, setCurrentCountry] = useState<Country>();
-
-	const capitalizeFirstLetter = (word: string) => {
-		return String(word).charAt(0).toUpperCase() + String(word).slice(1);
-	};
-
-	const handleGuess = (isCorrectValue: boolean, guess: string) => {
-		const formattedWord = capitalizeFirstLetter(guess);
-		setGuessHistory([
-			{ name: formattedWord || "", isCorrect: isCorrectValue },
-			...guessHistory,
-		]);
-		if (formattedWord === currentCountry?.name) {
-			getGuess();
-			setGuessHistory([]);
-		}
-	};
-
-	const getGuess = () => {
-		const randomIndex = Math.floor(Math.random() * europeanCountries.length);
-		setCurrentCountry(europeanCountries[randomIndex]);
-	};
-
-	useEffect(() => {
-		getGuess();
-	}, []);
+	const [isGameOver, setIsGameOver] = useState(false);
+	const [guesses, setGuesses] = useState<MapGuess[]>([]);
 
 	return (
 		<main className={classes.pageWrapper}>
 			<section className={classes.gameDisplay}>
 				<GuessingGameplaySection
 					gameType="country"
-					answer={currentCountry?.name}
-					image={currentCountry?.image}
-					guessHistory={guessHistory}
-					handleGuess={handleGuess}
+					setGuesses={setGuesses}
+					autocompleteOptions={europeanCountries.map((item) => item.name)}
 				/>
 			</section>
-			<section className={classes.mapSection}>right</section>
+			<section className={classes.mapSection}>
+				<GameMap guesses={guesses} />
+			</section>
+			<AnimatePresence>{isGameOver && <EndModal />}</AnimatePresence>
 		</main>
 	);
 };
