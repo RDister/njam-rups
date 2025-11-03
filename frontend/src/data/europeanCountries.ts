@@ -1,13 +1,3 @@
-import { StaticImageData } from "next/image";
-import albania from "../../public/GuessTheCountry/albania.png";
-import andorra from "../../public/GuessTheCountry/andorra.png";
-import austria from "../../public/GuessTheCountry/austria.png";
-import belarus from "../../public/GuessTheCountry/belarus.png";
-import belgium from "../../public/GuessTheCountry/belgium.png";
-import bosnia from "../../public/GuessTheCountry/bosnia.png";
-import bulgaria from "../../public/GuessTheCountry/bulgaria.png";
-import croatia from "../../public/GuessTheCountry/croatia.png";
-
 export interface Country {
 	name: string;
 	lat: number;
