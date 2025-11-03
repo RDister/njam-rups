@@ -55,6 +55,7 @@ public class GameLogicService {
         if (isCorrect) {
             session.setScore(session.getScore() + pointsEarned);
             session.setCurrentQuestionNumber(session.getCurrentQuestionNumber() + 1);
+            session.setCurrentQuestionAttempts(0);
         }
         session.updateActivity();
    
