@@ -11,14 +11,16 @@ import {
 import Image from "next/image";
 import Button from "../Button/Button";
 import Typography from "../Typography/Typography";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useGameEnd, useGameGuess, useGameStart } from "@/api/game/hooks";
 import classes from "./GuessingGameplaySection.module.scss";
 import InputAutocomplete from "../Input/InputAutocomplete/InputAutocomplete";
 import { MapGuess } from "../GameMap/GameMap";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Routes } from "@/constants/routes";
 import { GameFormat, GameMode } from "@/api/models/game/GameModel";
+import CorrectAnswerModal from "../CorrectAnswerModal/CorrectAnswerModal";
+import EndModal from "../EndModal/EndModal";
 
 interface GuessingGameplaySectionProps {
 	gameType: "country" | "city";
@@ -41,13 +43,21 @@ const GuessingGameplaySection = ({
 	const [sessionId, setSessionId] = useState<string | null>(null);
 	const [imageUrl, setImageUrl] = useState("");
 	const [currentGuess, setCurrentGuess] = useState("");
+	const [correctAnswer, setCorrectAnswer] = useState("");
+	const [score, setScore] = useState(0);
+
+	const [isGameOver, setIsGameOver] = useState(false);
+
+	const [currentGame, setCurrentGame] = useState<GameMode>();
+	const [isAnswerModalOpen, setIsAnswerModalOpen] = useState(false);
+
+	const searchParams = useSearchParams();
+	const gameModeParam = searchParams.get("mode") as GameFormat | null;
 
 	const { mutate: startGame } = useGameStart();
 	const { mutate: endGame } = useGameEnd();
 	const { mutate: mutateMakeGuess } = useGameGuess();
 
-	const [currentGame, setCurrentGame] = useState<GameMode>();
-	const [currentGameFormat, setCurrentGameFormat] = useState<GameFormat>();
 	const pathname = usePathname();
 
 	useEffect(() => {
@@ -56,20 +66,14 @@ const GuessingGameplaySection = ({
 		} else if (pathname.includes(Routes.GUESS_THE_CAPITAL)) {
 			setCurrentGame("capitals");
 		}
-
-		/* if (pathname.includes("test")) {
-			setCurrentGameFormat("classic");
-		} else if (pathname.includes("practice")) {
-			setCurrentGameFormat("endless");
-		} */
 	}, [pathname]);
 
 	useEffect(() => {
 		if (!currentGame) return;
-		//if (!currentGameFormat) return;
+		if (!gameModeParam) return;
 
 		startGame(
-			{ gameMode: currentGame, format: "classic" },
+			{ gameMode: currentGame, format: gameModeParam },
 			{
 				onSuccess: (data) => {
 					setSessionId(data.sessionId);
@@ -84,7 +88,7 @@ const GuessingGameplaySection = ({
 			}
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [currentGame, currentGameFormat]);
+	}, [currentGame, gameModeParam]);
 
 	const capitalizeFirstLetter = (word?: string) => {
 		return String(word).charAt(0).toUpperCase() + String(word).slice(1);
@@ -104,11 +108,19 @@ const GuessingGameplaySection = ({
 			{ sessionId: sessionId || "", guess: currentGuess },
 			{
 				onSuccess: (data) => {
-					// Clear the form after successful submission
 					setCurrentGuess("");
+
+					setScore(data.score);
+
+					if (data.gameOver) {
+						setIsGameOver(true);
+						return;
+					}
 
 					if (data.correct) {
 						const formattedWord = capitalizeFirstLetter(currentGuess);
+						setCorrectAnswer(formattedWord);
+
 						setGuessHistory([
 							{
 								name: formattedWord || "",
@@ -125,6 +137,12 @@ const GuessingGameplaySection = ({
 								isCorrect: true,
 							},
 						]);
+
+						setIsAnswerModalOpen(true);
+						setCurrentGuess("");
+						setGuesses([]);
+						setGuessHistory([]);
+						setImageUrl(`http://localhost:8081/${data.nextImageUrl}`);
 					} else {
 						const formattedWord = capitalizeFirstLetter(currentGuess);
 						setGuessHistory([
@@ -152,12 +170,31 @@ const GuessingGameplaySection = ({
 
 	return (
 		<div className={classes.componentWrapper}>
-			<div className={classes.flagContainer}>
-				{imageUrl && (
-					<div className={classes.imageWrapper}>
-						<Image src={imageUrl} alt="flag" className={classes.flag} fill />
-					</div>
+			<AnimatePresence>
+				{isAnswerModalOpen && (
+					<CorrectAnswerModal
+						setIsAnswerModalOpen={setIsAnswerModalOpen}
+						answer={correctAnswer}
+					/>
 				)}
+			</AnimatePresence>
+			<AnimatePresence>
+				{isGameOver && <EndModal score={score} maxScore={10} />}
+			</AnimatePresence>
+			<div className={classes.flagContainer}>
+				<AnimatePresence mode="popLayout">
+					{imageUrl && (
+						<motion.div
+							key={imageUrl}
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							exit={{ opacity: 0 }}
+							className={classes.imageWrapper}
+						>
+							<Image src={imageUrl} alt="flag" className={classes.flag} fill />
+						</motion.div>
+					)}
+				</AnimatePresence>
 			</div>
 			<form className={classes.form} onSubmit={makeGuess} noValidate>
 				<InputAutocomplete

@@ -15,7 +15,7 @@
 .innerContainer {
 	padding: 24px;
 	border-radius: 24px;
-	max-width: 350px;
+	max-width: 400px;
 	width: 100%;
 	position: relative;
 	display: flex;
@@ -24,25 +24,16 @@
 	flex-direction: column;
 	justify-content: center;
 	background: var(--background-01);
-
-	a {
-		width: 100%;
-	}
 }
 
-.progressbar {
-	width: 200px;
-	height: 200px;
+.content {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	align-items: center;
+	text-align: center;
 }
 
-.resultText {
-	margin-top: -70px;
-}
-
-.image {
-	position: absolute;
-	width: 130px;
-	height: auto;
-	top: -80px;
-	right: -40px;
+.answer {
+	text-decoration: underline var(--success);
 }

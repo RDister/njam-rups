@@ -31,8 +31,8 @@ const StartGameModal = ({ toggleModal }: StartGameModalProps) => {
 			>
 				<Typography variant="heading-5">Choose your gamemode</Typography>
 				<div className={classes.gamemodeCards}>
-					<GamemodeCard game={game} gamemode={"test"} />
-					<GamemodeCard game={game} gamemode={"practice"} />
+					<GamemodeCard game={game} gamemode="classic" />
+					<GamemodeCard game={game} gamemode="endless" />
 				</div>
 			</motion.div>
 		</motion.div>

@@ -13,23 +13,27 @@ import Image from "next/image";
 import classes from "./EndModal.module.scss";
 import colors from "@/styles/variables";
 
-const EndModal = () => {
-	const testScore = 2; // will be replaced with actual score once gameplay is done
+interface EndModalProps {
+	score: number;
+	maxScore: number;
+}
+
+const EndModal = ({ score, maxScore }: EndModalProps) => {
 	const [animatedScore, setAnimatedScore] = useState(0);
 
 	useEffect(() => {
-		setAnimatedScore(testScore);
-	}, []);
+		setAnimatedScore(score);
+	}, [score]);
 
 	const progressBarColor = useMemo(() => {
-		if (testScore < 4) {
+		if (score < maxScore * 0.4) {
 			return colors.error02;
-		} else if (testScore < 8) {
+		} else if (score < maxScore * 0.8) {
 			return colors.mediumScore01;
 		} else {
 			return colors.success02;
 		}
-	}, [testScore]);
+	}, [maxScore, score]);
 
 	return (
 		<motion.div
@@ -45,13 +49,24 @@ const EndModal = () => {
 				className={classes.innerContainer}
 			>
 				<Typography variant="heading-4">Score</Typography>
-				<Typography variant="subheading-2" align="center">
-					Keep up the amazing work!
-				</Typography>
+
+				{0 <= score && score < maxScore * 0.4 ? (
+					<Typography variant="subheading-2" align="center">
+						Don&apos;t be discouraged, you can do better!
+					</Typography>
+				) : maxScore * 0.4 <= score && score < maxScore * 0.8 ? (
+					<Typography variant="subheading-2" align="center">
+						Great job, you&apos;re getting there!
+					</Typography>
+				) : (
+					<Typography variant="subheading-2" align="center">
+						Keep up the amazing work!
+					</Typography>
+				)}
 				<div className={classes.progressbar}>
 					<CircularProgressbar
-						value={animatedScore * 10}
-						text={`${animatedScore * 10}%`}
+						value={Math.round((animatedScore / maxScore) * 100)}
+						text={`${Math.round((animatedScore / maxScore) * 100)}%`}
 						circleRatio={0.6}
 						styles={buildStyles({
 							rotation: 0.7,
@@ -69,14 +84,14 @@ const EndModal = () => {
 					color="--neutral-600"
 					className={classes.resultText}
 				>
-					You scored {testScore} out of 10 correct answers.
+					You scored {score} out of {maxScore} correct answers.
 				</Typography>
 				<Link href={Routes.HOME}>
 					<Button fullWidth>Return to Homepage</Button>
 				</Link>
-				{0 <= testScore && testScore < 4 ? (
+				{0 <= score && score < maxScore * 0.4 ? (
 					<Image src={sadParrot} alt="Sad Parrot" className={classes.image} />
-				) : 4 <= testScore && testScore < 8 ? (
+				) : maxScore * 0.4 <= score && score < maxScore * 0.8 ? (
 					<Image
 						src={mediumParrot}
 						alt="Medium Parrot"

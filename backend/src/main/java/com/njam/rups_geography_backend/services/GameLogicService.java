@@ -40,7 +40,13 @@ public class GameLogicService {
         }
         
         boolean isCorrect = checkTextAnswer(request.getGuess(), session.getCurrentCorrectAnswer().getName());
-        int pointsEarned = isCorrect ? 1 : 0;
+        int pointsEarned = 0;
+
+        session.setCurrentQuestionAttempts(session.getCurrentQuestionAttempts() + 1);
+
+        if (isCorrect && session.getCurrentQuestionAttempts() == 1) {
+            pointsEarned = 1;
+        }
         
         Answer correctAnswer = session.getCurrentCorrectAnswer();
         Answer userAnswer = isCorrect ? correctAnswer : findAnswerByName(session.getGameMode(), request.getGuess());
@@ -79,6 +85,7 @@ public class GameLogicService {
             .questionNumber(session.getCurrentQuestionNumber())
             .gameOver(gameOver)
             .nextImageUrl(nextImageUrl)
+            .hint(correctAnswer.getName().substring(0, 1))
             .build();
     }
 
@@ -152,6 +159,7 @@ public class GameLogicService {
         session.setCurrentCorrectAnswer(answer);
         session.setCurrentQuestionNumber(0);
         session.setScore(0);
+        session.setCurrentQuestionAttempts(0);
         session.updateActivity();
         
         sessionService.updateSession(session);

@@ -52,10 +52,11 @@ public class GameSessionController {
                 return ResponseEntity.badRequest().build();
             }
 
+
             // Create session
             GameSession session = gameSessionService.createSession(gameMode, format);
             log.info("Created game session: {}", session.getId());
-            
+
             // Generate first question
             Answer firstQuestion = gameLogicService.startNewQuestion(session.getId());
             
