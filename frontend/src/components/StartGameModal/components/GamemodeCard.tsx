@@ -12,7 +12,7 @@ import Image from "next/image";
 
 interface GamemodeCardProps {
 	game: GameType;
-	gamemode: "test" | "practice";
+	gamemode: "classic" | "endless";
 }
 
 const GamemodeCard = ({ game, gamemode }: GamemodeCardProps) => {
@@ -20,7 +20,7 @@ const GamemodeCard = ({ game, gamemode }: GamemodeCardProps) => {
 		<div className={classes.container}>
 			<div className={classes.iconWrapper}>
 				<Image
-					src={gamemode === "practice" ? earth : test}
+					src={gamemode === "endless" ? earth : test}
 					alt=""
 					className={classes.icon}
 					fill
@@ -28,7 +28,7 @@ const GamemodeCard = ({ game, gamemode }: GamemodeCardProps) => {
 			</div>
 			<div className={classes.imageWrapper}>
 				<Image
-					src={gamemode === "practice" ? endlessGamemode : testGamemode}
+					src={gamemode === "endless" ? endlessGamemode : testGamemode}
 					alt=""
 					className={classes.image}
 					fill
@@ -43,16 +43,16 @@ const GamemodeCard = ({ game, gamemode }: GamemodeCardProps) => {
 					className={classes.descriptionSecondary}
 					variant="body-1-regular"
 				>
-					{gamemode === "test" ? "10 questions" : "Endless"}
+					{gamemode === "classic" ? "10 questions" : "Endless"}
 				</Typography>
 			</div>
 			<Link
 				href={
 					game === "country"
-						? `/games/guessTheCountry?${gamemode}`
+						? `/games/guessTheCountry?mode=${gamemode}`
 						: game === "city"
-						? `/games/guessTheCapital?${gamemode}`
-						: `/games/guessTheLandmark?${gamemode}`
+						? `/games/guessTheCapital?mode=${gamemode}`
+						: `/games/guessTheLandmark?mode=${gamemode}`
 				}
 				className={classes.cardWrapper}
 			>

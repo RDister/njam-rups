@@ -48,7 +48,7 @@ const HomePage = () => {
 						title="Guess the Landmark"
 						description="Can you correctly identify what landmark belongs to which city?"
 						imageUrl={eiffelTower}
-						gamemode="geoguesser"
+						gamemode="landmark"
 						toggleModal={toggleModal}
 					/>
 				</section>

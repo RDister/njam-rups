@@ -4,13 +4,9 @@ import GuessingGameplaySection from "@/components/GuessingGameplaySection/Guessi
 import { memo, useState } from "react";
 import classes from "./GuessTheCapitalPage.module.scss";
 import GameMap, { MapGuess } from "@/components/GameMap/GameMap";
-import { AnimatePresence } from "framer-motion";
-import EndModal from "@/components/EndModal/EndModal";
 import { euCapitals } from "@/data/euCapitals";
 
 const GuessTheCapitalPage = () => {
-	const [isGameOver, setIsGameOver] = useState(false);
-
 	const [guesses, setGuesses] = useState<MapGuess[]>([]);
 
 	return (
@@ -25,7 +21,6 @@ const GuessTheCapitalPage = () => {
 			<section className={classes.mapSection}>
 				<GameMap guesses={guesses} />
 			</section>
-			<AnimatePresence>{isGameOver && <EndModal />}</AnimatePresence>
 		</main>
 	);
 };

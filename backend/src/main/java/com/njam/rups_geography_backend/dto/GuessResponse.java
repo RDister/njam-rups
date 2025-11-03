@@ -28,4 +28,6 @@ public class GuessResponse {
     private Boolean gameOver;
     
     private String nextImageUrl;
+
+    private String hint;
 }
