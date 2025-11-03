@@ -59,7 +59,11 @@ public class GameLogicService {
         
         String nextImageUrl = currentImageUrl; 
         if (isCorrect && !gameOver) {
-            Answer nextAnswer = generateNextQuestion(session.getGameMode());
+            Answer nextAnswer;
+            do {
+                nextAnswer = generateNextQuestion(session.getGameMode());
+            } while (nextAnswer.getName().equals(correctAnswer.getName()));
+            
             session.setCurrentCorrectAnswer(nextAnswer);
             nextImageUrl = generateImageUrl(session.getGameMode(), nextAnswer);
             sessionService.updateSession(session);
@@ -116,7 +120,11 @@ public class GameLogicService {
         
         String nextImageUrl = null;
         if (!gameOver) {
-            Answer nextAnswer = generateNextQuestion(session.getGameMode());
+            Answer nextAnswer;
+            do {
+                nextAnswer = generateNextQuestion(session.getGameMode());
+            } while (nextAnswer.getName().equals(correctAnswer.getName()));
+            
             session.setCurrentCorrectAnswer(nextAnswer);
             nextImageUrl = generateImageUrl(session.getGameMode(), nextAnswer);
             sessionService.updateSession(session);
@@ -208,20 +216,19 @@ public class GameLogicService {
     
     //Točkovanje za ugibanje znamenitosti
     private int calculateSightsPoints(double distanceKm) {
-        if (distanceKm <= 0.5) return 1000;
-        if (distanceKm <= 1)   return 900;
-        if (distanceKm <= 2)   return 800;
-        if (distanceKm <= 5)   return 600;
-        if (distanceKm <= 10)  return 400;
-        if (distanceKm <= 25)  return 250;
-        if (distanceKm <= 100) return 150;
-        if (distanceKm <= 500) return 100;
-        if (distanceKm <= 2000) return 50;
-        return 0;
+        final int MAX_POINTS = 1000;
+
+        if (distanceKm <= 10) return MAX_POINTS;
+
+        double scale = 2000.0; 
+        double score = MAX_POINTS * Math.exp(-distanceKm / scale);
+
+        return (int) Math.max(0, Math.round(score));
     }
 
+
     
-    //Ooptional I guess...
+    //Optional I guess...
     private String getDistanceDescription(double distanceKm) {
         if (distanceKm <= 50) {
             return "Perfect! Almost exact!";
