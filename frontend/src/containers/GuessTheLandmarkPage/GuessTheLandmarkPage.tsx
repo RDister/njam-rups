@@ -6,8 +6,11 @@ import classes from "./GuessTheLandmarkPage.module.scss";
 import GuessTheLandmarkMap from "./components/GuessTheLandmarkMap/GuessTheLandmarkMap";
 import Button from "@/components/Button/Button";
 import Typography from "@/components/Typography/Typography";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useGameStart, useGameEnd, useSightsGameGuess } from "@/api/game/hooks";
+import { useSearchParams } from "next/navigation";
+import { GameFormat } from "@/api/models/game/GameModel";
+import EndModal from "@/components/EndModal/EndModal";
 
 const GuessTheLandmarkPage = () => {
 	const [sessionId, setSessionId] = useState<string>("");
@@ -21,15 +24,21 @@ const GuessTheLandmarkPage = () => {
 		useState<google.maps.LatLngLiteral | null>(null);
 	const [distanceFromGoal, setDistanceFromGoal] = useState<number | null>(null);
 	const [score, setScore] = useState<number | null>(null);
-	const [scores, setScores] = useState<number[]>([]);
+	const [totalScore, setTotalScore] = useState<number>(0);
+	const [isGameOver, setIsGameOver] = useState(false);
+
+	const searchParams = useSearchParams();
+	const gameModeParam = searchParams.get("mode") as GameFormat | null;
 
 	const { mutate: startGame } = useGameStart();
 	const { mutate: endGame } = useGameEnd();
 	const { mutate: mutateMakeGuess } = useSightsGameGuess();
 
 	useEffect(() => {
+		if (!gameModeParam) return;
+
 		startGame(
-			{ gameMode: "sights", format: "classic" },
+			{ gameMode: "sights", format: gameModeParam },
 			{
 				onSuccess: (data) => {
 					setSessionId(data.sessionId);
@@ -44,7 +53,7 @@ const GuessTheLandmarkPage = () => {
 			}
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [gameModeParam]);
 
 	const makeGuess = (guess: google.maps.LatLngLiteral) => {
 		console.log("Making guess:", guess);
@@ -60,7 +69,13 @@ const GuessTheLandmarkPage = () => {
 					setGoalPosition({ lat: data.answer.lat, lng: data.answer.lon });
 					setDistanceFromGoal(data.distanceKm);
 					setScore(data.pointsEarned);
-					setScores((prevScores) => [...prevScores, data.pointsEarned]);
+					setTotalScore(data.score);
+
+					if (data.gameOver) {
+						setIsGameOver(true);
+						return;
+					}
+
 					setNextImageUrl(`http://localhost:8081/${data.nextImageUrl}`);
 				},
 			}
@@ -77,16 +92,21 @@ const GuessTheLandmarkPage = () => {
 
 	return (
 		<main className={classes.pageWrapper}>
+			<AnimatePresence>
+				{isGameOver && <EndModal score={totalScore} maxScore={10000} />}
+			</AnimatePresence>
 			<section className={classes.sightSection}>
 				<div className={classes.imageWrapper}>
-					{imageUrl && (
-						<Image
-							src={imageUrl}
-							className={classes.sightImage}
-							alt={"sight image"}
-							fill
-						/>
-					)}
+					<AnimatePresence mode="popLayout">
+						{imageUrl && (
+							<Image
+								src={imageUrl}
+								className={classes.sightImage}
+								alt={"sight image"}
+								fill
+							/>
+						)}
+					</AnimatePresence>
 				</div>
 			</section>
 			<section className={classes.right}>
