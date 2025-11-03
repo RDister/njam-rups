@@ -17,7 +17,7 @@ public class GuessResponse {
     
     private Boolean correct;
     
-    private Answer correctAnswer;
+    private Answer answer;
 
     private Integer pointsEarned;
 

@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 
 
 @RestController
-@RequestMapping("/api/game")
+@RequestMapping("/game")
 @RequiredArgsConstructor
 @Slf4j
 public class GameSessionController {
@@ -62,7 +62,7 @@ public class GameSessionController {
             GuessResponse response = GuessResponse.builder()
                 .sessionId(session.getId())
                 .correct(null)              
-                .correctAnswer(null)       
+                .answer(null)       
                 .pointsEarned(null)        
                 .score(0)
                 .questionNumber(1)
