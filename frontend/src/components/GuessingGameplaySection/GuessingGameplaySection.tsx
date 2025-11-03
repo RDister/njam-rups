@@ -40,6 +40,7 @@ const GuessingGameplaySection = ({
 	const [guessHistory, setGuessHistory] = useState<GuessItem[]>([]);
 	const [sessionId, setSessionId] = useState<string | null>(null);
 	const [imageUrl, setImageUrl] = useState("");
+	const [currentGuess, setCurrentGuess] = useState("");
 
 	const { mutate: startGame } = useGameStart();
 	const { mutate: endGame } = useGameEnd();
@@ -91,15 +92,21 @@ const GuessingGameplaySection = ({
 
 	const makeGuess = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const formData = new FormData(e.target as HTMLFormElement);
-		const currentGuess = formData.get("currentGuess")?.toString();
 
 		console.log("Making guess:", currentGuess);
+
+		if (!currentGuess || currentGuess.trim() === "") {
+			console.log("Empty guess, not submitting");
+			return;
+		}
 
 		mutateMakeGuess(
 			{ sessionId: sessionId || "", guess: currentGuess },
 			{
 				onSuccess: (data) => {
+					// Clear the form after successful submission
+					setCurrentGuess("");
+
 					if (data.correct) {
 						const formattedWord = capitalizeFirstLetter(currentGuess);
 						setGuessHistory([
@@ -152,6 +159,8 @@ const GuessingGameplaySection = ({
 					}
 					name="currentGuess"
 					id="currentGuess"
+					value={currentGuess}
+					onChange={(value) => setCurrentGuess(value)}
 					required
 				/>
 				<Button type="submit">Enter</Button>
