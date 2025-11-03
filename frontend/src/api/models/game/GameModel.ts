@@ -12,7 +12,7 @@ export type GameFormat = "classic" | "endless";
 export interface GameStart {
 	sessionId: string;
 	correct: boolean;
-	correctAnswer: CorrectAnswer;
+	answer: CorrectAnswer;
 	pointsEarned: number;
 	score: number;
 	questionNumber: number;

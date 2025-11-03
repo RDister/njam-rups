@@ -120,8 +120,8 @@ const GuessingGameplaySection = ({
 						setGuesses((prevGuesses) => [
 							...prevGuesses,
 							{
-								lat: Number(data.correctAnswer.lat),
-								lng: Number(data.correctAnswer.lon),
+								lat: Number(data.answer.lat),
+								lng: Number(data.answer.lon),
 								isCorrect: true,
 							},
 						]);
@@ -134,6 +134,15 @@ const GuessingGameplaySection = ({
 								timeTaken: Date.now(),
 							},
 							...guessHistory,
+						]);
+						if (data.answer.lat == null) return;
+						setGuesses((prevGuesses) => [
+							...prevGuesses,
+							{
+								lat: Number(data.answer.lat),
+								lng: Number(data.answer.lon),
+								isCorrect: false,
+							},
 						]);
 					}
 				},
