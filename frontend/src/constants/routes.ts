@@ -13,4 +13,5 @@ export const ApiRoutes = {
 	gameEnd: ({ sessionId }: { sessionId: string }) =>
 		`/api/game/end/${sessionId}` as const,
 	gameGuess: () => `/api/game/guess` as const,
+	sightsGameGuess: () => `/api/game/guess/sights` as const,
 } as const;

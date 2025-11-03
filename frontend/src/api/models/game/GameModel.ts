@@ -1,8 +1,8 @@
 interface CorrectAnswer {
 	name: string;
 	country: string;
-	lat: string;
-	lon: string;
+	lat: number;
+	lon: number;
 }
 
 export type GameMode = "flags" | "capitals" | "sights";

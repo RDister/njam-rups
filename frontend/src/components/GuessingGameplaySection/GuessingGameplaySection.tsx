@@ -78,6 +78,7 @@ const GuessingGameplaySection = ({
 				onSuccess: (data) => {
 					setSessionId(data.sessionId);
 					setImageUrl(`http://localhost:8081/${data.nextImageUrl}`);
+					console.log(data);
 				},
 			}
 		);
