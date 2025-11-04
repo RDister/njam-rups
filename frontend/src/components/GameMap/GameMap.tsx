@@ -9,6 +9,7 @@ import {
 	Map,
 } from "@vis.gl/react-google-maps";
 import colors from "@/styles/variables";
+import GameCounter from "../GameCounter/GameCounter";
 
 export interface MapGuess {
 	lat: number;
@@ -18,9 +19,10 @@ export interface MapGuess {
 
 interface GameMapProps {
 	guesses: MapGuess[];
+	questionNumber: number;
 }
 
-const GameMap = ({ guesses }: GameMapProps) => {
+const GameMap = ({ guesses, questionNumber }: GameMapProps) => {
 	const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 	const mapId = process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID;
 
@@ -31,6 +33,7 @@ const GameMap = ({ guesses }: GameMapProps) => {
 
 	return (
 		<div className={classes.container}>
+			<GameCounter count={questionNumber} />
 			<APIProvider apiKey={apiKey}>
 				<Map
 					style={{ width: "100%", height: "100%" }}

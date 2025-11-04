@@ -28,6 +28,7 @@ interface GuessingGameplaySectionProps {
 	gameType: "country" | "city";
 	setGuesses: Dispatch<SetStateAction<MapGuess[]>>;
 	autocompleteOptions: string[];
+	setQuestionNumber: Dispatch<SetStateAction<number>>;
 }
 
 interface GuessItem {
@@ -40,10 +41,12 @@ const GuessingGameplaySection = ({
 	gameType,
 	setGuesses,
 	autocompleteOptions,
+	setQuestionNumber,
 }: GuessingGameplaySectionProps) => {
 	const [guessHistory, setGuessHistory] = useState<GuessItem[]>([]);
 	const [sessionId, setSessionId] = useState<string | null>(null);
 	const [imageUrl, setImageUrl] = useState("");
+	const [nextImageUrl, setNextImageUrl] = useState("");
 	const [currentGuess, setCurrentGuess] = useState("");
 	const [correctAnswer, setCorrectAnswer] = useState("");
 	const [score, setScore] = useState(0);
@@ -98,6 +101,16 @@ const GuessingGameplaySection = ({
 		return String(word).charAt(0).toUpperCase() + String(word).slice(1);
 	};
 
+	const handleNextQuestion = () => {
+		setCorrectAnswer("");
+		setImageUrl(nextImageUrl);
+		setNextImageUrl("");
+		setHint("");
+		setGuesses([]);
+		setGuessHistory([]);
+		setQuestionNumber((prev) => prev + 1);
+	};
+
 	const makeGuess = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
@@ -145,11 +158,7 @@ const GuessingGameplaySection = ({
 						]);
 
 						setIsAnswerModalOpen(true);
-						setCurrentGuess("");
-						setGuesses([]);
-						setGuessHistory([]);
-						setHint("");
-						setImageUrl(`http://localhost:8081/${data.nextImageUrl}`);
+						setNextImageUrl(`http://localhost:8081/${data.nextImageUrl}`);
 					} else {
 						const formattedWord = capitalizeFirstLetter(currentGuess);
 						setGuessHistory([
@@ -182,6 +191,7 @@ const GuessingGameplaySection = ({
 					<CorrectAnswerModal
 						setIsAnswerModalOpen={setIsAnswerModalOpen}
 						answer={correctAnswer}
+						handleNextQuestion={handleNextQuestion}
 					/>
 				)}
 			</AnimatePresence>
@@ -221,21 +231,43 @@ const GuessingGameplaySection = ({
 					)}
 				</AnimatePresence>
 			</div>
-			<form className={classes.form} onSubmit={makeGuess} noValidate>
-				<InputAutocomplete
-					options={autocompleteOptions}
-					expandHorizontaly
-					placeholder={
-						gameType === "country" ? "Enter country..." : "Enter city..."
-					}
-					name="currentGuess"
-					id="currentGuess"
-					value={currentGuess}
-					onChange={(value) => setCurrentGuess(value)}
-					required
-				/>
-				<Button type="submit">Enter</Button>
-			</form>
+			<AnimatePresence initial={false} mode="wait">
+				{!correctAnswer ? (
+					<motion.form
+						className={classes.form}
+						onSubmit={makeGuess}
+						noValidate
+						initial={{ opacity: 0, scale: 0.95 }}
+						animate={{ opacity: 1, scale: 1 }}
+						exit={{ opacity: 0, scale: 0.95 }}
+					>
+						<InputAutocomplete
+							options={autocompleteOptions}
+							expandHorizontaly
+							placeholder={
+								gameType === "country" ? "Enter country..." : "Enter city..."
+							}
+							name="currentGuess"
+							id="currentGuess"
+							value={currentGuess}
+							onChange={(value) => setCurrentGuess(value)}
+							required
+						/>
+						<Button type="submit">Enter</Button>
+					</motion.form>
+				) : (
+					<Button
+						fullWidth
+						className={classes.form}
+						initial={{ opacity: 0, scale: 0.95 }}
+						animate={{ opacity: 1, scale: 1 }}
+						exit={{ opacity: 0, scale: 0.95 }}
+						onClick={handleNextQuestion}
+					>
+						Next Question
+					</Button>
+				)}
+			</AnimatePresence>
 			<div className={classes.guessHistoryWrapper}>
 				<Typography variant="body-1-regular">Guess history</Typography>
 				<div className={classes.guessHistoryContent}>

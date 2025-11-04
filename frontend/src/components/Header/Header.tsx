@@ -8,9 +8,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { usePathname } from "next/navigation";
 import { Routes } from "@/constants/routes";
 import Typography from "../Typography/Typography";
+import { motion } from "framer-motion";
 
 const Header = () => {
-	const [currentGame, setCurrentGame] = useState<string>("..."); // good enough for now no need for global context
+	const [currentGame, setCurrentGame] = useState<string>("...");
 	const pathname = usePathname();
 
 	useEffect(() => {
@@ -26,12 +27,18 @@ const Header = () => {
 	return (
 		<div className={classes.headerWrapper}>
 			<Link href={Routes.HOME} className={classes.homeWrapper}>
-				<FontAwesomeIcon
-					icon={faHouse}
-					width={30}
-					height={30}
-					className={classes.home}
-				/>
+				<motion.div
+					whileHover={{ scale: 1.04 }}
+					whileTap={{ scale: 0.96 }}
+					className={classes.homeButton}
+				>
+					<FontAwesomeIcon
+						icon={faHouse}
+						width={30}
+						height={30}
+						className={classes.home}
+					/>
+				</motion.div>
 			</Link>
 			<Typography variant="heading-5">{currentGame}</Typography>
 			<Typography variant="heading-5">NJAM</Typography>

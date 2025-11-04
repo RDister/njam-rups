@@ -10,12 +10,14 @@ import {
 import { memo } from "react";
 import classes from "./GuessTheLandmarkMap.module.scss";
 import { Polyline } from "@/components/Polyline/Polyline";
+import GameCounter from "@/components/GameCounter/GameCounter";
 
 interface GuessTheLandmarkMapProps {
 	guessPosition: google.maps.LatLngLiteral | null;
 	onGuessPositionChange: (position: google.maps.LatLngLiteral | null) => void;
 	disableGuessing: boolean;
 	goalPosition: google.maps.LatLngLiteral | null;
+	count: number;
 }
 
 const GuessTheLandmarkMap = ({
@@ -23,6 +25,7 @@ const GuessTheLandmarkMap = ({
 	onGuessPositionChange,
 	disableGuessing = false,
 	goalPosition,
+	count,
 }: GuessTheLandmarkMapProps) => {
 	const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 	const mapId = process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID;
@@ -34,6 +37,7 @@ const GuessTheLandmarkMap = ({
 
 	return (
 		<div className={classes.container}>
+			<GameCounter count={count} />
 			<APIProvider apiKey={apiKey}>
 				<Map
 					defaultCenter={{ lat: 22.54992, lng: 0 }}
