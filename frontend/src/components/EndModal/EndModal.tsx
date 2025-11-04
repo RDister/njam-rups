@@ -84,7 +84,7 @@ const EndModal = ({ score, maxScore }: EndModalProps) => {
 					color="--neutral-600"
 					className={classes.resultText}
 				>
-					You scored {score} out of {maxScore} correct answers.
+					You scored {score} out of {maxScore} {maxScore === 10000 ? "points" : "correct answers"}.
 				</Typography>
 				<Link href={Routes.HOME}>
 					<Button fullWidth>Return to Homepage</Button>
