@@ -22,6 +22,9 @@ export const useGameEnd = () => {
 export const useGameGuess = () => {
 	return useMutation({
 		mutationFn: gameGuess,
+		onSuccess: (data) => {
+			console.log("Guessed successfully:", data);
+		},
 	});
 };
 
