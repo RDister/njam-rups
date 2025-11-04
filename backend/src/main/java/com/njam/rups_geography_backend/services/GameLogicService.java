@@ -29,62 +29,65 @@ public class GameLogicService {
     
     //Tu procesiramo guess requeste od flags in capitals
     public GuessResponse processGuess(GuessRequest request) {
-        
+
         GameSession session = sessionService.getSession(request.getSessionId());
-        if (session == null) {
-            throw new IllegalArgumentException("Invalid session ID");
-        }
-        
+        int pointsEarned = 0;
+        Answer correctAnswer = session.getCurrentCorrectAnswer();
+        Answer userAnswer = findAnswerByName(session.getGameMode(), request.getGuess());
+        boolean gameOver = false;
+
+        //Po defaultu mu pošljemo isto sliko in njegov odgovor
+        String nextImageUrl = generateImageUrl(session.getGameMode(), correctAnswer);
+        Answer responseAnswer = userAnswer;
+
         if (session.getCurrentCorrectAnswer() == null) {
             throw new IllegalStateException("No active question in session");
         }
         
-        boolean isCorrect = checkTextAnswer(request.getGuess(), session.getCurrentCorrectAnswer().getName());
-        int pointsEarned = 0;
-
-        session.setCurrentQuestionAttempts(session.getCurrentQuestionAttempts() + 1);
-
-        if (isCorrect && session.getCurrentQuestionAttempts() == 1) {
-            pointsEarned = 1;
-        }
+        sessionService.updateSession(session);
         
-        Answer correctAnswer = session.getCurrentCorrectAnswer();
-        Answer userAnswer = isCorrect ? correctAnswer : findAnswerByName(session.getGameMode(), request.getGuess());
-        String currentImageUrl = generateImageUrl(session.getGameMode(), correctAnswer);
-        
+        //Čekiramo pravilnost
+        boolean isCorrect = checkTextAnswer(userAnswer.getName(), correctAnswer.getName());
+
+
         if (isCorrect) {
+            //Točko dobi le če zadane v prvo
+            if (session.getCurrentQuestionAttempts() == 1) {
+                pointsEarned = 1;
+            }
+
             session.setScore(session.getScore() + pointsEarned);
             session.setCurrentQuestionNumber(session.getCurrentQuestionNumber() + 1);
             session.setCurrentQuestionAttempts(0);
+                    
+            //Če je classic in je blo to 10. vprašanje je konec
+            if ("classic".equalsIgnoreCase(session.getFormat())) {
+                gameOver = session.getCurrentQuestionNumber() >= CLASSIC_MODE_QUESTIONS;
+            }
         }
-        session.updateActivity();
-   
-        boolean gameOver = false;
-        if ("classic".equalsIgnoreCase(session.getFormat())) {
-            gameOver = session.getCurrentQuestionNumber() >= CLASSIC_MODE_QUESTIONS;
+        else{
+            session.setCurrentQuestionAttempts(session.getCurrentQuestionAttempts() + 1);
         }
+
         
-        String nextImageUrl = currentImageUrl; 
+   
+        //Če je prav pošljemo naslednjo sliko & odgovor, sicer obdrzimo zdajsnjo
         if (isCorrect && !gameOver) {
-            Answer nextAnswer;
             do {
-                nextAnswer = generateNextQuestion(session.getGameMode());
-            } while (nextAnswer.getName().equals(correctAnswer.getName()));
+                responseAnswer = generateNextQuestion(session.getGameMode());
+            } while (responseAnswer.getName().equals(correctAnswer.getName()));
             
-            session.setCurrentCorrectAnswer(nextAnswer);
-            nextImageUrl = generateImageUrl(session.getGameMode(), nextAnswer);
-            sessionService.updateSession(session);
+            session.setCurrentCorrectAnswer(responseAnswer);
+            nextImageUrl = generateImageUrl(session.getGameMode(), responseAnswer);
         } else if (gameOver) {
             sessionService.endSession(session.getId());
             nextImageUrl = null;
-        } else {
-            sessionService.updateSession(session);
         }
         
         return GuessResponse.builder()
             .sessionId(session.getId())
             .correct(isCorrect)
-            .answer(userAnswer) 
+            .answer(responseAnswer) 
             .pointsEarned(pointsEarned)
             .score(session.getScore())
             .questionNumber(session.getCurrentQuestionNumber())
@@ -168,9 +171,7 @@ public class GameLogicService {
         session.setCurrentCorrectAnswer(answer);
         session.setCurrentQuestionNumber(0);
         session.setScore(0);
-        session.setCurrentQuestionAttempts(0);
-        session.updateActivity();
-        
+        session.setCurrentQuestionAttempts(0);        
         sessionService.updateSession(session);
         return answer;
     }

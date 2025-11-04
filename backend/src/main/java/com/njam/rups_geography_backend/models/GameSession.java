@@ -42,7 +42,7 @@ public class GameSession implements Serializable {
     
     private Answer currentCorrectAnswer;
 
-    private int currentQuestionAttempts = 0;
+    private int currentQuestionAttempts;
     
     public void updateActivity() {
         this.lastActivityAt = LocalDateTime.now();
