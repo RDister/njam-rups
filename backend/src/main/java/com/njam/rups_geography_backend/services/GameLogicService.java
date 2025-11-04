@@ -73,15 +73,18 @@ public class GameLogicService {
    
         //Če je prav pošljemo naslednjo sliko & odgovor, sicer obdrzimo zdajsnjo
         if (isCorrect && !gameOver) {
+            Answer nextAnswer;
             do {
-                responseAnswer = generateNextQuestion(session.getGameMode());
-            } while (responseAnswer.getName().equals(correctAnswer.getName()));
+                nextAnswer = generateNextQuestion(session.getGameMode());
+            } while (nextAnswer.getName().equals(correctAnswer.getName()));
             
-            session.setCurrentCorrectAnswer(responseAnswer);
-            nextImageUrl = generateImageUrl(session.getGameMode(), responseAnswer);
+            session.setCurrentCorrectAnswer(nextAnswer);
+            nextImageUrl = generateImageUrl(session.getGameMode(), nextAnswer);
+            responseAnswer = correctAnswer; 
         } else if (gameOver) {
             sessionService.endSession(session.getId());
             nextImageUrl = null;
+            responseAnswer = correctAnswer; 
         }
         
         return GuessResponse.builder()
