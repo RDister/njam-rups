@@ -36,6 +36,8 @@ public class GameLogicService {
         Answer userAnswer = findAnswerByName(session.getGameMode(), request.getGuess());
         boolean gameOver = false;
 
+        session.setCurrentQuestionAttempts(session.getCurrentQuestionAttempts()+1);
+
         //Po defaultu mu pošljemo isto sliko in njegov odgovor
         String nextImageUrl = generateImageUrl(session.getGameMode(), correctAnswer);
         Answer responseAnswer = userAnswer;
@@ -44,10 +46,14 @@ public class GameLogicService {
             throw new IllegalStateException("No active question in session");
         }
         
-        sessionService.updateSession(session);
-        
         //Čekiramo pravilnost
-        boolean isCorrect = checkTextAnswer(userAnswer.getName(), correctAnswer.getName());
+        boolean isCorrect;
+        if(userAnswer != null){
+            isCorrect = checkTextAnswer(userAnswer.getName(), correctAnswer.getName());
+        }
+        else{
+            isCorrect = false;
+        }
 
 
         if (isCorrect) {
@@ -80,11 +86,15 @@ public class GameLogicService {
             
             session.setCurrentCorrectAnswer(nextAnswer);
             nextImageUrl = generateImageUrl(session.getGameMode(), nextAnswer);
-            responseAnswer = correctAnswer; 
+            responseAnswer = correctAnswer;
+            sessionService.updateSession(session); // Save all changes to Redis
         } else if (gameOver) {
             sessionService.endSession(session.getId());
             nextImageUrl = null;
             responseAnswer = correctAnswer; 
+        } else {
+            // Wrong answer - just update the attempts counter
+            sessionService.updateSession(session);
         }
         
         return GuessResponse.builder()
