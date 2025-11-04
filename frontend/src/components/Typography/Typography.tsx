@@ -9,6 +9,7 @@ type TextVariant =
 	| "heading-4"
 	| "heading-4-regular"
 	| "heading-5"
+	| "heading-6"
 	| "subheading-1"
 	| "subheading-2"
 	| "body-1"

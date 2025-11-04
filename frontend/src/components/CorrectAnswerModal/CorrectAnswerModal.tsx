@@ -7,11 +7,13 @@ import classes from "./CorrectAnswerModal.module.scss";
 interface CorrectAnswerModalProps {
 	setIsAnswerModalOpen: Dispatch<SetStateAction<boolean>>;
 	answer: string;
+	handleNextQuestion: () => void;
 }
 
 const CorrectAnswerModal = ({
 	setIsAnswerModalOpen,
 	answer,
+	handleNextQuestion,
 }: CorrectAnswerModalProps) => {
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
@@ -52,13 +54,26 @@ const CorrectAnswerModal = ({
 						{answer}
 					</Typography>
 				</section>
-				<Button
-					fullWidth
-					tabIndex={0}
-					onClick={() => setIsAnswerModalOpen(false)}
-				>
-					Close
-				</Button>
+				<section className={classes.buttons}>
+					<Button
+						fullWidth
+						tabIndex={0}
+						onClick={() => setIsAnswerModalOpen(false)}
+						className={classes.closeButton}
+					>
+						Close
+					</Button>
+					<Button
+						fullWidth
+						tabIndex={0}
+						onClick={() => {
+							setIsAnswerModalOpen(false);
+							handleNextQuestion();
+						}}
+					>
+						Next Question
+					</Button>
+				</section>
 			</motion.div>
 		</motion.div>
 	);

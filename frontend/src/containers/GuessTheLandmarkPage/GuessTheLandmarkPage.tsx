@@ -26,6 +26,7 @@ const GuessTheLandmarkPage = () => {
 	const [score, setScore] = useState<number | null>(null);
 	const [totalScore, setTotalScore] = useState<number>(0);
 	const [isGameOver, setIsGameOver] = useState(false);
+	const [count, setCount] = useState(1);
 
 	const searchParams = useSearchParams();
 	const gameModeParam = searchParams.get("mode") as GameFormat | null;
@@ -88,6 +89,7 @@ const GuessTheLandmarkPage = () => {
 		setDistanceFromGoal(null);
 		setScore(null);
 		setImageUrl(nextImageUrl);
+		setCount((prev) => prev + 1);
 	};
 
 	return (
@@ -102,7 +104,7 @@ const GuessTheLandmarkPage = () => {
 							<Image
 								src={imageUrl}
 								className={classes.sightImage}
-								alt={"sight image"}
+								alt="sight image"
 								fill
 							/>
 						)}
@@ -116,6 +118,7 @@ const GuessTheLandmarkPage = () => {
 						onGuessPositionChange={setCurrentGuess}
 						disableGuessing={goalPosition != null}
 						goalPosition={goalPosition}
+						count={count}
 					/>
 				</section>
 				<section className={classes.controlsSection}>

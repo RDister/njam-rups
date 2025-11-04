@@ -8,6 +8,7 @@ import GameMap, { MapGuess } from "@/components/GameMap/GameMap";
 
 const GuessTheCountryPage = () => {
 	const [guesses, setGuesses] = useState<MapGuess[]>([]);
+	const [questionNumber, setQuestionNumber] = useState(1);
 
 	return (
 		<main className={classes.pageWrapper}>
@@ -15,11 +16,12 @@ const GuessTheCountryPage = () => {
 				<GuessingGameplaySection
 					gameType="country"
 					setGuesses={setGuesses}
+					setQuestionNumber={setQuestionNumber}
 					autocompleteOptions={europeanCountries.map((item) => item.name)}
 				/>
 			</section>
 			<section className={classes.mapSection}>
-				<GameMap guesses={guesses} />
+				<GameMap guesses={guesses} questionNumber={questionNumber} />
 			</section>
 		</main>
 	);

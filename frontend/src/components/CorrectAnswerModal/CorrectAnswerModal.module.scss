@@ -37,3 +37,14 @@
 .answer {
 	text-decoration: underline var(--success);
 }
+
+.buttons {
+	display: flex;
+	gap: 12px;
+	width: 100%;
+}
+
+.closeButton {
+	background: var(--neutral-400);
+	color: var(--neutral-900);
+}

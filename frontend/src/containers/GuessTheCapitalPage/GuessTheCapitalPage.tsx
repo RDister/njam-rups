@@ -8,6 +8,7 @@ import { euCapitals } from "@/data/euCapitals";
 
 const GuessTheCapitalPage = () => {
 	const [guesses, setGuesses] = useState<MapGuess[]>([]);
+	const [questionNumber, setQuestionNumber] = useState(1);
 
 	return (
 		<main className={classes.pageWrapper}>
@@ -16,10 +17,11 @@ const GuessTheCapitalPage = () => {
 					gameType="city"
 					setGuesses={setGuesses}
 					autocompleteOptions={euCapitals.map((item) => item.capital)}
+					setQuestionNumber={setQuestionNumber}
 				/>
 			</section>
 			<section className={classes.mapSection}>
-				<GameMap guesses={guesses} />
+				<GameMap guesses={guesses} questionNumber={questionNumber} />
 			</section>
 		</main>
 	);

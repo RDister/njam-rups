@@ -92,6 +92,17 @@
 	}
 }
 
+.heading-6 {
+	font-size: 24px;
+	line-height: 32px;
+	font-weight: bold;
+
+	@media (max-width: $breakpoint-sm) {
+		font-size: 20px;
+		line-height: 28px;
+	}
+}
+
 .subheading-1 {
 	font-size: 22px;
 	line-height: 40px;
